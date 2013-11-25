@@ -1,0 +1,51 @@
+.dev-default-skin {
+  position: relative;
+}
+.dev-default-skin .dev-controls-panel {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+.dev-default-skin .dev-control-play {
+  position: relative;
+  float: left;
+}
+.dev-default-skin .dev-control-time {
+  position: relative;
+  float: left;
+}
+.dev-default-skin .dev-control-mute {
+  position: relative;
+  float: right;
+}
+.dev-default-skin .dev-control-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: auto;
+  top: -1em;
+}
+.dev-default-skin .dev-control-progress .dev-progress-wrap {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 15px;
+  background-color: #666;
+}
+.dev-default-skin .dev-control-progress .dev-progress-loaded {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: #ccc;
+}
+.dev-default-skin .dev-control-progress .dev-progress-played {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: #00a5ff;
+}

@@ -66,6 +66,11 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		// 首次播放的播放列表序号
 		playlistIndex: {
 			value: 0
+		},
+
+		// 皮肤
+		defaultSkin: {
+			value: 'dev-default-skin'
 		}
 	};
 
@@ -89,6 +94,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		renderUI: function() {
+			// 添加默认皮肤前缀
+			this.con.addClass(this.get('defaultSkin'));
+			
 			this._createVideoTag();
 			
 			// 如果需要使用用户自定义的控制面板
@@ -133,7 +141,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 						loop: this.get('loop'),
 						controls: controls,
 						width: this.get('width'),
-						height: this.get('height')
+						height: this.get('height'),
 				});
 
 				this.con.append(videoDom);
@@ -286,6 +294,13 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
+		 * TODO:获取已经缓存的时间
+		 */
+		getBuffered: function() {
+			return this.videoTag.buffered;
+		},
+
+		/**
 		 * TODO:设置播放质量
 		 */
 		setPlaybackQuality: function(quality) {},
@@ -312,5 +327,5 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 	return Player;
 
 }, {
-	requires: ['base', 'event', 'dom', 'node', 'gallery/h5player/1.0/controls/controlspanel']
+	requires: ['base', 'event', 'dom', 'node', 'gallery/h5player/1.0/controls/controlspanel', './index.css']
 });

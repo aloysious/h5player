@@ -47,11 +47,30 @@ module.exports = function(grunt) {
                     '<%= pkg.version %>/build/index-min.js': ['<%= pkg.version %>/build/index.js']
                 }
             }
-        }
+        },
+
+		less: {
+            options: {
+                paths: './'
+            },
+            main: {
+                files: [
+                    {
+                        expand: true,
+						cwd:'1.0/',
+                        src: ['**/*.less'],
+                        dest: '1.0/',
+                        ext: '.css'
+                    }
+                ]
+            }
+			
+		}
     });
 
     // 使用到的任务，可以增加其他任务
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-kmc');
     return grunt.registerTask('default', ['kmc', 'uglify']);
 };

@@ -64,7 +64,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay, MuteTogg
 			this.playToggle = 'playtoggle' in this.exclude? null: new PlayToggle(this.controlsNode, this.player);
 			this.timeDisplay = 'timedisplay' in this.exclude? null: new TimeDisplay(this.controlsNode, this.player);
 			this.muteToggle = 'mutetoggle' in this.exclude? null: new MuteToggle(this.controlsNode, this.player);
-			//this.progress = 'progress' in this.exclude? null: new Progress(this.controlsNode, this.player);
+			this.progress = 'progress' in this.exclude? null: new Progress(this.controlsNode, this.player);
 			//this.volume = 'volume' in this.exclude? null: new Volume(this.controlsNode, this.player);
 			//this.fullscreen = 'fullscreen' in this.exclude? null: new Fullscreen(this.controlsNode, this.player);
 		},
@@ -82,8 +82,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay, MuteTogg
 		'node', 
 		'./playtoggle', 
 		'./timedisplay', 
-		'./mutetoggle'/*, 
-		'./progress', 
+		'./mutetoggle', 
+		'./progress'/*, 
 		'./volume', 
 		'./fullscreen'*/
 	]
