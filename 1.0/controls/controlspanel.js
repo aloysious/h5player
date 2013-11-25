@@ -3,7 +3,7 @@
  *               默认的基础功能有：播放按钮，时间进度，静音按钮，音量条，全屏按钮，进度条
  *               可以通过配置exclude来屏蔽基本功能，配置include来扩展控制面板功能
  */
-KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay, MuteToggle,  Progress, Volume, Fullscreen) {
+KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progress, Volume, MuteToggle, Fullscreen) {
 
 	"use strict";
 
@@ -63,9 +63,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay, MuteTogg
 
 			this.playToggle = 'playtoggle' in this.exclude? null: new PlayToggle(this.controlsNode, this.player);
 			this.timeDisplay = 'timedisplay' in this.exclude? null: new TimeDisplay(this.controlsNode, this.player);
-			this.muteToggle = 'mutetoggle' in this.exclude? null: new MuteToggle(this.controlsNode, this.player);
 			this.progress = 'progress' in this.exclude? null: new Progress(this.controlsNode, this.player);
-			//this.volume = 'volume' in this.exclude? null: new Volume(this.controlsNode, this.player);
+			this.volume = 'volume' in this.exclude? null: new Volume(this.controlsNode, this.player);
+			this.muteToggle = 'mutetoggle' in this.exclude? null: new MuteToggle(this.controlsNode, this.player);
 			//this.fullscreen = 'fullscreen' in this.exclude? null: new Fullscreen(this.controlsNode, this.player);
 		},
 
@@ -82,9 +82,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay, MuteTogg
 		'node', 
 		'./playtoggle', 
 		'./timedisplay', 
-		'./mutetoggle', 
-		'./progress'/*, 
+		'./progress', 
 		'./volume', 
+		'./mutetoggle'/*, 
 		'./fullscreen'*/
 	]
 });

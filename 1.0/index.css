@@ -1,5 +1,9 @@
 .dev-default-skin {
   position: relative;
+  color: #fff;
+}
+.dev-default-skin video {
+  background-color: #000;
 }
 .dev-default-skin .dev-controls-panel {
   position: absolute;
@@ -32,6 +36,7 @@
   left: 0;
   height: 15px;
   background-color: #666;
+  cursor: pointer;
 }
 .dev-default-skin .dev-control-progress .dev-progress-loaded {
   position: absolute;
@@ -46,6 +51,27 @@
   top: 0;
   left: 0;
   width: 0;
+  height: 100%;
+  background-color: #00a5ff;
+}
+.dev-default-skin .dev-control-volume {
+  position: relative;
+  float: right;
+  width: 50px;
+}
+.dev-default-skin .dev-control-volume .dev-volume-wrap {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 15px;
+  background-color: #666;
+  cursor: pointer;
+}
+.dev-default-skin .dev-control-volume .dev-volume-current {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   background-color: #00a5ff;
 }

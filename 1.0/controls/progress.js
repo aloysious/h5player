@@ -1,5 +1,5 @@
 /**
-   @fileoverview 播放按钮模块
+   @fileoverview 进度条模块
  */
 KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 
@@ -28,7 +28,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			value: '<div class="dev-progress-wrap">' + 
 				   		'<div class="dev-progress-loaded"></div>' + 
 						'<div class="dev-progress-played"></div>' + 
-						'<div class="dev-progress-pointer"></div>' +
 				   '</div>'
 		}
 	}
@@ -54,12 +53,41 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		bindUI: function() {
-			//EVENT.on(this.node, 'click', this._onPlayToggle, this);
+			EVENT.on(this.node, 'mousedown', this._onMouseDown, this);
+			EVENT.on(this.node, 'touchstart', this._onMouseDown, this);
 			
 			// 按钮状态的改变可能由模块外部的事件触发
 			// 因此，这部分的逻辑处理应该放在player的事件回调中
 			this.player.on('timeupdate', this._onTimeupdate, this);
 			this.player.on('progress', this._onProgress, this);
+		},
+
+		_onMouseDown: function(e) {
+			EVENT.on(this.node, 'mousemove', this._onMouseMove, this);
+			EVENT.on(this.node, 'mouseup', this._onMouseUp, this);
+			EVENT.on(this.node, 'touchmove', this._onMouseMove, this);
+			EVENT.on(this.node, 'touchend', this._onMouseUp, this);
+
+			this._onMouseMove(e);
+		},
+
+		_onMouseUp: function(e) {
+			EVENT.detach(this.node, 'mousemove', this._onMouseMove, this);
+			EVENT.detach(this.node, 'mouseup', this._onMouseUp, this);
+			EVENT.detach(this.node, 'touchmove', this._onMouseMove, this);
+			EVENT.detach(this.node, 'touchend', this._onMouseUp, this);
+
+			this.player.play();
+		},
+
+		_onMouseMove: function(e) {
+			var distance = e.pageX - this.node.offset().left,
+				width = this.node.width(),
+				sec = (this.player.getDuration()) ? distance / width * this.player.getDuration(): 0;
+
+			this.player.pause();
+			this.player.seekTo(sec);
+
 		},
 
 		_onTimeupdate: function(e) {

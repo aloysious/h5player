@@ -211,7 +211,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		/**
 		 * TODO:推进视频到特定的时刻
 		 */
-		seekTo: function(time) {},
+		seekTo: function(time) {
+			this.videoTag.currentTime = time;
+		},
 
 		/**
 		 * TODO:播放列表中的下一个视频
