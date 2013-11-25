@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>demo标题</title>
+    <script src="http://a.tbcdn.cn/s/kissy/1.3.0/kissy-min.js" charset="utf-8"></script>
+</head>
+<body>
+	<h2>demo标题</h2>
+	<div id="J_player" style="width:480px;height:320px;"></div>
+
+<script>
+    var S = KISSY;
+    if (S.Config.debug) {
+        var srcPath = "../../../";
+        S.config({
+            packages:[
+                {
+                    name:"gallery",
+                    path:srcPath,
+                    charset:"utf-8",
+                    ignorePackageNameInUri:true
+                }
+            ]
+        });
+    }
+
+    S.use('gallery/h5player/1.0/index', function (S, H5player) {
+		var h5player = new H5player('#J_player', {
+			src: 'http://video-js.zencoder.com/oceans-clip.mp4',
+			controls: {},
+			autoplay: true,
+			preload: 'auto'
+		});
+    })
+</script>
+</body>
+</html>
