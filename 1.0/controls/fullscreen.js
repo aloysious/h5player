@@ -1,42 +1,85 @@
-KISSY.add("", function (S) {
+/**
+   @fileoverview 全屏按钮模块
+ */
+KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 
 	"use strict";
 
-	function X(id,cfg) {
-		if (this instanceof X) {
+	function Fullscreen(con, player, cfg) {
+		if (this instanceof Fullscreen) {
 
-			this.con = S.one(id);
+			this.con = con;
+			this.player = player;
 
-			X.superclass.constructor.call(this, cfg);
+			Fullscreen.superclass.constructor.call(this, cfg);
 			this.init();
 
 		} else {
-			return new X(id,cfg);
+			return new Fullscreen(con, player, cfg);
 		}
 	}
 
-	// ATTR Example
-	X.ATTRS = {
-		a: {
-			setter: function(){},
-			getter: function(){},
-			value: 1
-		}
-	};
+	Fullscreen.ATTRS = {
+		className: {
+			value: 'dev-control-fullscreen'
+		},
 
-	S.extend(X, S.Base, {
+		innerHTML: {
+			value: '<div class="dev-control-content">fullscreen</div>'
+		}
+	}
+
+	S.extend(Fullscreen, S.Base, {
 
 		init: function() {
 			// your code here
+			this.renderUI();
+			this.bindUI();
+		},
+		
+		destory: function(){
+			
 		},
 
-		destory: function(){
+		renderUI: function() {
+			var fullscreenDom = DOM.create('<div class="' + this.get('className') + '">' + this.get('innerHTML') + '</div>');
+			this.con.append(fullscreenDom);
+			this.node = this.con.one('.' + this.get('className'));
+		},
 
+		bindUI: function() {
+			EVENT.on(this.node, 'click', this._onFullscreen, this);
+			
+			// 按钮状态的改变可能由模块外部的事件触发
+			// 因此，这部分的逻辑处理应该放在player的事件回调中
+			this.player.on('fullscreenchange', this._onFullscreenChange, this);
+		},
+
+		_onFullscreen: function() {
+			if (!this.player.getIsFullScreen()) {
+				this.player.requestFullScreen();	
+			} else {
+				this.player.cancelFullScreen();
+			}
+		},
+
+		_onFullscreenChange: function() {
+			console.log(this.player.getIsFullScreen());
+			if (!this.player.getIsFullScreen()) {
+				this.node.removeClass('dev-non-fullscreen');
+				this.node.addClass('dev-fullscreen');
+				this.node.one('.dev-control-content').html('fullscreen');
+			
+			} else {
+				this.node.removeClass('dev-fullscreen');
+				this.node.addClass('dev-non-fullscreen');
+				this.node.one('.dev-control-content').html('non-fullscreen');
+			}
 		}
 	});
 
-	return X;
+	return Fullscreen;
 
 }, {
-	requires: ['base','node']
+	requires: ['base', 'event', 'dom', 'node']
 });

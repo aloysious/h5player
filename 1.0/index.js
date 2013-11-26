@@ -45,16 +45,21 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 
 		// 播放器宽度
 		width: {
-			value: '100%'
+			value: 'auto'
 		},
 
 		// 播放器高度
 		height: {
-			value: '100%'
+			value: '200px'
 		},
 
 		// 播放列表数组
 		playlist: {
+			value: []
+		},
+
+		// 字母列表数组
+		tracklist: {
 			value: []
 		},
 
@@ -81,6 +86,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			this.controls = this.get('controls');
 			this.playlist = this.get('playlist');
 			this.playlistIndex = this.get('playlistIndex');
+			this.tracklist = this.get('tracklist');
 			this.render();
 		},
 
@@ -96,6 +102,10 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		renderUI: function() {
 			// 添加默认皮肤前缀
 			this.con.addClass(this.get('defaultSkin'));
+			this.con.css({
+				width: this.get('width'),
+				height: this.get('height')
+			});
 			
 			this._createVideoTag();
 			
@@ -121,6 +131,22 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				});
 			});
 
+			// 全屏事件
+			this.on('fullscreenchange', function() {
+				if (that.isFullScreen) {
+					that.con.addClass('dev-fullscreen');
+				} else {
+					that.con.removeClass('dev-fullscreen');
+				}
+			});
+
+			this.on('ended', function() {
+				// 如果存在播放列表，并且不进行单个媒体源的循环播放，则播放下一个视频
+				if (that.playlist.length > 0 && that.get('loop') !== true) {
+					that.nextVideo();
+				}
+			});
+
 		},
 
 		/**
@@ -140,8 +166,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 						autoplay: this.get('autoplay'),
 						loop: this.get('loop'),
 						controls: controls,
-						width: this.get('width'),
-						height: this.get('height'),
+						width: '100%',
+						height: '100%',
 				});
 
 				this.con.append(videoDom);
@@ -157,6 +183,56 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		_createControlsPanel: function() {
 			this.controlsPanel = new ControlsPanel(this.id, this, this.controls);
 		},
+
+		/**
+		 * TODO:检测fullscreen的支持情况，即时函数
+		 */
+		_supportFullscreen: (function() {
+			var prefix, requestFS, div;
+
+			div = DOM.create('<div></div>');
+			requestFS = {};
+
+			// W3C标准
+			if (div.cancelFullscreen !== undefined) {
+				requestFS.requestFn = 'requestFullscreen';
+				requestFS.cancelFn = 'cancelFullscreen';
+				requestFS.eventName = 'fullscreenchange';
+				requestFS.isFullScreen = 'fullScreen';
+			
+			// webkit和mozilla的方法调用需要带前缀
+			} else {
+				if (document.mozCancelFullScreen) {
+					prefix = 'moz';
+					requestFS.isFullScreen = prefix + 'FullScreen';
+				} else {
+					prefix = 'webkit';
+					requestFS.isFullScreen = prefix + 'IsFullScreen';
+				}
+
+				if (div[prefix + 'RequestFullScreen']) {
+					requestFS.requestFn = prefix + 'RequestFullScreen';
+					requestFS.cancelFn = prefix + 'CancelFullScreen';
+				}
+				requestFS.eventName = prefix + 'fullscreenchange';
+			}
+
+			if (document[requestFS.cancelFn]) {
+				return requestFS;
+			}
+
+			return null;
+		})(),
+
+		/**
+		 * TODO:不支持fullscreenAPI时的全屏模拟
+		 */
+		_enterFullWindow: function() {},
+		
+		/**
+		 * TODO:不支持fullscreenAPI时的取消全屏模拟
+		 */
+		_exitFullWindow: function() {},
 	
 		////////////////////////////////////////////////////////////////
 		//                                                            //
@@ -173,12 +249,19 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		/**
 		 * TODO:通过url读取视频
 		 */
-		loadByUrl: function(url, startTime, quality) {},
+		loadByUrl: function(url, startTime, quality) {
+			this.videoTag.src = url;
+			this.videoTag.load();
+		},
 
 		/**
 		 * TODO:读取视频列表
 		 */
-		loadPlaylist: function(list, firstIndex, startTime, quality) {},
+		loadPlaylist: function(list, firstIndex, startTime, quality) {
+			this.playlist = list;
+			this.playlistIndex = firstIndex;
+			this.playVideoAt(this.playlistIndex);
+		},
 
 		
 		// ******************** 视频控制和配置相关 *********************
@@ -218,17 +301,38 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		/**
 		 * TODO:播放列表中的下一个视频
 		 */
-		nextVideo: function() {},
+		nextVideo: function() {
+			if (this.playlistIndex < (this.playlist.length - 1)) {
+				return this.playVideoAt(++this.playlistIndex);
+			}
+
+			return false;
+		},
 
 		/**
 		 * TODO:播放列表中的前一个视频
 		 */
-		prevVideo: function() {},
+		prevVideo: function() {
+			if (this.playlistIndex > 0) {
+				return this.playVideoAt(--this.playlistIndex);
+			}
+
+			return false;
+		},
 
 		/**
 		 * TODO:播放列表中特定的一个视频
 		 */
-		playVideoAt: function(index) {},
+		playVideoAt: function(index) {
+			var src = this.playlist[index];
+
+			if (!src) {
+				return false;
+			}
+	
+			this.loadByUrl(src);
+			return true;
+		},
 
 		/**
 		 * TODO:设置为静音
@@ -268,17 +372,77 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		/**
 		 * TODO:设置播放速率
 		 */
-		setPlaybackRate: function(rate) {},
+		setPlaybackRate: function(rate) {
+			this.videoTag.playbackRate = rate;
+		},
 
 		/**
 		 * TODO:获取播放速率
 		 */
-		getPlaybackRate: function() {},
+		getPlaybackRate: function() {
+			return this.videoTag.playbackRate;
+		},
 
 		/**
 		 * TODO:设置播放器静态占位图片
 		 */
-		setPoster: function(posterUrl) {},
+		setPoster: function(posterUrl) {
+			this.videoTag.poster = posterUrl;
+		},
+
+		/**
+		 * TODO:设置全屏
+		 */
+		requestFullScreen: function() {
+			var requestFullScreen = this._supportFullscreen,
+				conTag = this.con.getDOMNode(),
+				that = this;
+
+
+			this.isFullScreen = true;
+
+			if (requestFullScreen) {
+				EVENT.on(document, requestFullScreen.eventName, function(e) {
+					that.isFullScreen = document[requestFullScreen.isFullScreen];
+
+					if (that.isFullScreen === false) {
+						EVENT.detach(document, requestFullScreen.eventName);
+					}
+					
+					that.fire('fullscreenchange');
+				});
+
+				conTag[requestFullScreen.requestFn]();
+			
+			} else {
+				this._enterFullWindow();
+				this.fire('fullscreenchange');
+			}
+		},
+
+		/**
+		 * TODO:取消全屏
+		 */
+		cancelFullScreen: function() {
+			var requestFullScreen = this._supportFullscreen;
+
+			this.isFullScreen = false;
+
+			if (requestFullScreen) {
+				document[requestFullScreen.cancelFn]();
+			
+			} else {
+				this._exitFullWindow();
+				this.fire('fullscreenchange');
+			}
+		},
+
+		/**
+		 * TODO:是否处于全屏
+		 */
+		getIsFullScreen: function() {
+			return this.isFullScreen;
+		},
 
 		// ****************** 播放状态相关 **********************
 		/**
@@ -315,14 +479,16 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		/**
 		 * TODO:获取播放列表
 		 */
-		getPlaylist: function() {},
+		getPlaylist: function() {
+			return this.playlist;
+		},
 
 		/**
 		 * TODO:获取当前播放的视频在列表中的序号
 		 */
-		getPlaylistIndex: function() {}
-
-
+		getPlaylistIndex: function() {
+			return this.playlistIndex;
+		}
 
 	});
 

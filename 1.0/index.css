@@ -2,6 +2,18 @@
   position: relative;
   color: #fff;
 }
+.dev-default-skin:-webkit-full-screen {
+  width: 100%!important;
+  height: 100%!important;
+}
+.dev-default-skin:-moz-full-screen {
+  width: 100%!important;
+  height: 100%!important;
+}
+.dev-default-skin:-ms-full-screen {
+  width: 100%!important;
+  height: 100%!important;
+}
 .dev-default-skin video {
   background-color: #000;
 }
@@ -74,4 +86,8 @@
   width: 100%;
   height: 100%;
   background-color: #00a5ff;
+}
+.dev-default-skin .dev-control-fullscreen {
+  position: relative;
+  float: right;
 }

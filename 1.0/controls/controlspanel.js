@@ -1,7 +1,7 @@
 /**
  * @fileoverview 播放器控制面板模块
  *               默认的基础功能有：播放按钮，时间进度，静音按钮，音量条，全屏按钮，进度条
- *               可以通过配置exclude来屏蔽基本功能，配置include来扩展控制面板功能
+ *               可以通过配置filters来屏蔽基本功能，配置plugins来扩展控制面板功能
  */
 KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progress, Volume, MuteToggle, Fullscreen) {
 
@@ -25,13 +25,13 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 		
 		// 屏蔽的基本功能列表，以内部模块名标识
 		// 内部模块名有: 'playtoggle', 'timedisplay', 'progress', 'mutetoggle', 'volume', 'fullscreen'
-		exclude: {
+		filters: {
 			value: []
 		},
 
-		// 扩展功能列表，以模块名（具体项目的模块名，需自行包配置，否则会找不到）标识
-		// 如扩展收藏功能：'projectName/1.0.0/util/collect'
-		include: {
+		// 扩展功能列表，
+		// 如扩展收藏功能：[{fn: Collect, cfg: {XXXXX}}]
+		plugins: {
 			value: []
 		}
 		
@@ -41,7 +41,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 
 		init: function() {
 			// your code here
-			this.exclude = this.get('exclude');
+			this.filters = this.get('filters');
 			this.include = this.get('include');
 			this.render();
 		},
@@ -61,12 +61,12 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 			this.con.append(controlsDom);
 			this.controlsNode = this.con.one('.' + className);
 
-			this.playToggle = 'playtoggle' in this.exclude? null: new PlayToggle(this.controlsNode, this.player);
-			this.timeDisplay = 'timedisplay' in this.exclude? null: new TimeDisplay(this.controlsNode, this.player);
-			this.progress = 'progress' in this.exclude? null: new Progress(this.controlsNode, this.player);
-			this.volume = 'volume' in this.exclude? null: new Volume(this.controlsNode, this.player);
-			this.muteToggle = 'mutetoggle' in this.exclude? null: new MuteToggle(this.controlsNode, this.player);
-			//this.fullscreen = 'fullscreen' in this.exclude? null: new Fullscreen(this.controlsNode, this.player);
+			this.playToggle = 'playtoggle' in this.filters? null: new PlayToggle(this.controlsNode, this.player);
+			this.timeDisplay = 'timedisplay' in this.filters? null: new TimeDisplay(this.controlsNode, this.player);
+			this.progress = 'progress' in this.filters? null: new Progress(this.controlsNode, this.player);
+			this.fullscreen = 'fullscreen' in this.filters? null: new Fullscreen(this.controlsNode, this.player);
+			this.volume = 'volume' in this.filters? null: new Volume(this.controlsNode, this.player);
+			this.muteToggle = 'mutetoggle' in this.filters? null: new MuteToggle(this.controlsNode, this.player);
 		},
 
 		bindUI: function() {}
@@ -84,7 +84,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 		'./timedisplay', 
 		'./progress', 
 		'./volume', 
-		'./mutetoggle'/*, 
-		'./fullscreen'*/
+		'./mutetoggle', 
+		'./fullscreen'
 	]
 });
