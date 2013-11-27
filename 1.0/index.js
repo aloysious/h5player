@@ -38,7 +38,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			value: false
 		},
 
-		// TODO:控制面板配置
+		// TODO:控制面板配置，filters, plugins 
 		controls: {
 			value: null
 		},
@@ -147,6 +147,31 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				}
 			});
 
+			// 移动设备下激活控制版面，或控制播放
+			EVENT.on(this.con, 'click', function() {
+				if (!that.hasCustomedControls()) {
+					return;
+				}	
+
+				if (that.isControlsShown()) {
+					if (that.paused()) {
+						that.play();
+					} else {
+						that.pause();
+					}
+				
+				} else {
+					that.activeControls();
+				}
+			});
+
+			// 桌面系统，鼠标划过时激活控制面板
+			EVENT.on(this.con, 'mousemove', function() {
+				if (that.hasCustomedControls()) {
+					that.activeControls();
+				}
+			});
+
 		},
 
 		/**
@@ -160,8 +185,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				var src = this.playlist.length > 0? this.playlist[this.playlistIndex]: (this.get('src')? this.get('src'): ''),
 					controls = this.controls === 'default'? true: false,
 					videoDom = DOM.create('<video>', {
-						src: src,
-						poster: this.get('poster'),
+						src: src.source,
+						poster: this.get('poster') || src.poster,
 						preload: this.get('preload'),
 						autoplay: this.get('autoplay'),
 						loop: this.get('loop'),
@@ -182,6 +207,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		 */
 		_createControlsPanel: function() {
 			this.controlsPanel = new ControlsPanel(this.id, this, this.controls);
+			this.activeControls();
 		},
 
 		/**
@@ -329,8 +355,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			if (!src) {
 				return false;
 			}
-	
-			this.loadByUrl(src);
+
+			this.setPoster(src.poster);
+			this.loadByUrl(src.source);
 			return true;
 		},
 
@@ -442,6 +469,35 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		 */
 		getIsFullScreen: function() {
 			return this.isFullScreen;
+		},
+
+		hasCustomedControls: function() {
+			return !!this.controlsPanel;
+		},
+
+		isControlsShown: function() {
+			return this.controlsPanel && this.controlsPanel.isShown();
+		},
+
+		showControls: function() {
+			this.controlsPanel && this.controlsPanel.show();
+		},
+
+		hideControls: function() {
+			this.controlsPanel && this.controlsPanel.hide();
+		},
+
+		activeControls: function() {
+			var that = this;
+
+			if (this.controlsTimeout) {
+				clearTimeout(this.controlsTimeout);
+			}
+
+			this.showControls();
+			this.controlsTimeout = setTimeout(function() {
+				that.hideControls();
+			}, 3000);
 		},
 
 		// ****************** 播放状态相关 **********************

@@ -34,7 +34,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 		plugins: {
 			value: []
 		}
-		
 	};
 
 	S.extend(ControlsPanel, S.Base, {
@@ -60,7 +59,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 				controlsDom = DOM.create('<div class="' + className + '"></div>');
 			this.con.append(controlsDom);
 			this.controlsNode = this.con.one('.' + className);
-
+			
 			this.playToggle = 'playtoggle' in this.filters? null: new PlayToggle(this.controlsNode, this.player);
 			this.timeDisplay = 'timedisplay' in this.filters? null: new TimeDisplay(this.controlsNode, this.player);
 			this.progress = 'progress' in this.filters? null: new Progress(this.controlsNode, this.player);
@@ -69,7 +68,24 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 			this.muteToggle = 'mutetoggle' in this.filters? null: new MuteToggle(this.controlsNode, this.player);
 		},
 
-		bindUI: function() {}
+		// 防止控制面板的点击事件冒泡
+		bindUI: function() {
+			EVENT.on(this.controlsNode, 'click', function(e) {
+				e.halt();
+			});
+		},
+
+		isShown: function() {
+			return !(this.controlsNode.css('display') === 'none')
+		},
+
+		show: function() {
+			this.controlsNode.show();
+		},
+
+		hide: function() {
+			this.controlsNode.hide();
+		}
 	});
 
 	return ControlsPanel;

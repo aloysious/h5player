@@ -25,7 +25,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		innerHTML: {
-			value: '<div class="dev-control-content"><span class="dev-current-time">00:00:00</span> / <span class="dev-duration">00:00:00</span></div>'
+			value: '<div class="dev-control-content"><span class="dev-current-time">00:00</span> / <span class="dev-duration">00:00</span></div>'
 		}
 	}
 
@@ -71,11 +71,11 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			min = Math.floor(raw / 60);
 			sec = raw % 60;
 
-			hour = hour > 10? hour: '0' + hour;
-			min = min > 10? min: '0' + min;
-			sec = sec > 10? sec: '0' + sec;
+			hour = hour >= 10? hour: '0' + hour;
+			min = min >= 10? min: '0' + min;
+			sec = sec >= 10? sec: '0' + sec;
 
-			return hour + ':' + min + ':' + sec;
+			return (hour === '00'? '': (hour + ':')) + min + ':' + sec;
 		}
 
 	});

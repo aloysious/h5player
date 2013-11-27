@@ -1,3 +1,25 @@
+@font-face {
+  font-family: 'iconfont';
+  src: url('./iconfonts/iconfont.eot');
+  src: url('./iconfonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+   url('./iconfonts/iconfont.woff') format('woff'), /* chrome、firefox */
+   url('./iconfonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+   url('./iconfonts/iconfont.svg#uxiconfont') format('svg');/* IE9*/
+  /* iOS 4.1- */
+}
+.iconfont {
+  font-family: "iconfont";
+  font-size: 14px;
+  font-style: normal;
+  color: #fff;
+}
+.dev-control-tip {
+  padding: 2px;
+  position: absolute;
+  color: #fff;
+  background-color: #000000;
+  display: none;
+}
 .dev-default-skin {
   position: relative;
   color: #fff;
@@ -22,10 +44,14 @@
   left: 0;
   bottom: 0;
   width: 100%;
+  padding-top: 2px;
 }
 .dev-default-skin .dev-control-play {
   position: relative;
   float: left;
+  width: 30px;
+  text-align: center;
+  cursor: pointer;
 }
 .dev-default-skin .dev-control-time {
   position: relative;
@@ -34,19 +60,26 @@
 .dev-default-skin .dev-control-mute {
   position: relative;
   float: right;
+  width: 30px;
+  text-align: center;
+  cursor: pointer;
+  line-height: 19px;
+}
+.dev-default-skin .dev-mute .iconfont {
+  color: #666;
 }
 .dev-default-skin .dev-control-progress {
   position: absolute;
   left: 0;
   right: 0;
   width: auto;
-  top: -1em;
+  top: -5px;
 }
 .dev-default-skin .dev-control-progress .dev-progress-wrap {
   position: relative;
   top: 0;
   left: 0;
-  height: 15px;
+  height: 5px;
   background-color: #666;
   cursor: pointer;
 }
@@ -64,18 +97,19 @@
   left: 0;
   width: 0;
   height: 100%;
-  background-color: #00a5ff;
+  background-color: #fc5e10;
 }
 .dev-default-skin .dev-control-volume {
   position: relative;
   float: right;
   width: 50px;
+  margin: 6px 10px 6px 0;
 }
 .dev-default-skin .dev-control-volume .dev-volume-wrap {
   position: relative;
   top: 0;
   left: 0;
-  height: 15px;
+  height: 5px;
   background-color: #666;
   cursor: pointer;
 }
@@ -85,9 +119,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #00a5ff;
+  background-color: #fc5e10;
 }
 .dev-default-skin .dev-control-fullscreen {
   position: relative;
   float: right;
+  width: 30px;
+  text-align: center;
+  cursor: pointer;
+  line-height: 19px;
 }

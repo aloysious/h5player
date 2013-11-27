@@ -33,8 +33,18 @@
     S.use('gallery/h5player/1.0/index', function (S, H5player) {
 		var h5player = new H5player('#J_player', {
 			playlist: [
-				'http://media.w3.org/2010/05/sintel/trailer.mp4',
-				'http://video-js.zencoder.com/oceans-clip.mp4'
+				{
+					source: 'http://video-js.zencoder.com/oceans-clip.mp4',
+					type: 'video/mp4',
+					poster: '',
+					story: 'http://gtms01.alicdn.com/tps/i1/T1vf_rFjlaXXc4E9bI-400-300.png'
+				},
+				{
+					source: 'http://media.w3.org/2010/05/sintel/trailer.mp4',
+					type: 'video/mp4',
+					poster: '',
+					story: 'http://gtms01.alicdn.com/tps/i1/T1ka74FjtaXXc4E9bI-400-300.png'
+				}
 			],
 			controls: {},
 			autoplay: true,

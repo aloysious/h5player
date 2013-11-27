@@ -60,6 +60,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		_onMouseDown: function(e) {
+			e.halt();
 			EVENT.on(this.node, 'mousemove', this._onMouseMove, this);
 			EVENT.on(this.node, 'mouseup', this._onMouseUp, this);
 			EVENT.on(this.node, 'touchmove', this._onMouseMove, this);
@@ -69,6 +70,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		_onMouseUp: function(e) {
+			e.halt();
 			EVENT.detach(this.node, 'mousemove', this._onMouseMove, this);
 			EVENT.detach(this.node, 'mouseup', this._onMouseUp, this);
 			EVENT.detach(this.node, 'touchmove', this._onMouseMove, this);

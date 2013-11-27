@@ -25,7 +25,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		innerHTML: {
-			value: '<div class="dev-control-content">play</div>'
+			value: '<div class="dev-control-content"><div class="iconfont" data-status="play">&#13786</div></div>'
 		}
 	}
 
@@ -48,7 +48,21 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		bindUI: function() {
+			var that = this;
+
 			EVENT.on(this.node, 'click', this._onPlayToggle, this);
+
+			/*
+			if (this.get('hasTip')) {
+				EVENT.on(this.node, 'mousemove', function(e) {
+					var content = that.node.hasClass('dev-playing')? '暂停': '播放';
+					Tip.show(content, e.pageX, e.pageY);
+				});
+				EVENT.on(this.node, 'mouseout', function() {
+					Tip.hide();
+				});
+			}
+			*/
 			
 			// 按钮状态的改变可能由模块外部的事件触发
 			// 因此，这部分的逻辑处理应该放在player的事件回调中
@@ -56,7 +70,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			this.player.on('pause', this._onPause, this);
 		},
 
-		_onPlayToggle: function() {
+		_onPlayToggle: function(e) {
+			e.halt();
+
 			if (this.player.paused()) {
 				this.player.play();
 			} else {
@@ -67,13 +83,13 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		_onPlay: function() {
 			this.node.removeClass('dev-paused');
 			this.node.addClass('dev-playing');
-			this.node.one('.dev-control-content').html('pause');
+			this.node.one('.dev-control-content').html('<div class="iconfont" data-status="pause">&#13743</div>');
 		},
 
 		_onPause: function() {
 			this.node.removeClass('dev-playing');
 			this.node.addClass('dev-paused');
-			this.node.one('.dev-control-content').html('play');
+			this.node.one('.dev-control-content').html('<div class="iconfont" data-status="play">&#13786</div>');
 		}
 	});
 

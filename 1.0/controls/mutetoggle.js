@@ -25,7 +25,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		innerHTML: {
-			value: '<div class="dev-control-content">mute</div>'
+			value: '<div class="dev-control-content"><div class="iconfont" data-status="mute">&#13442</div></div>'
 		}
 	}
 
@@ -57,7 +57,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			this.player.on('volumechange', this._onVolumeChange, this);
 		},
 
-		_onMuteToggle: function() {
+		_onMuteToggle: function(e) {
+			e.halt();
+
 			if (this.player.isMuted()) {
 				this.player.unmute();
 
@@ -70,12 +72,12 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			if (this.player.isMuted()) {
 				this.node.removeClass('dev-unmute');
 				this.node.addClass('dev-mute');
-				this.node.one('.dev-control-content').html('unmute');
+				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="unmute">&#13442</div>');
 			
 			} else {
 				this.node.removeClass('dev-mute');
 				this.node.addClass('dev-unmute');
-				this.node.one('.dev-control-content').html('mute');
+				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="mute">&#13442</div>');
 			}
 		}
 	});

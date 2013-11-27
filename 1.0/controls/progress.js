@@ -1,7 +1,7 @@
 /**
    @fileoverview 进度条模块
  */
-KISSY.add(function (S, Base, EVENT, DOM, NODE) {
+KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 
 	"use strict";
 
@@ -55,6 +55,25 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		bindUI: function() {
 			EVENT.on(this.node, 'mousedown', this._onMouseDown, this);
 			EVENT.on(this.node, 'touchstart', this._onMouseDown, this);
+
+
+			EVENT.on(this.node, 'mousemove', function(e) {
+				var distance = e.pageX - this.node.offset().left,
+					width = this.node.width(),
+					sec = (this.player.getDuration()) ? distance / width * this.player.getDuration(): 0,
+					currSrc = this.player.getPlaylist()[this.player.getPlaylistIndex()];
+				
+				if (currSrc && currSrc.story) {
+					this.story = currSrc.story;
+					var content = this._getStoryAt(sec);
+					Tip.update(content, e);
+					Tip.show();
+				}
+			}, this);
+			EVENT.on(this.node, 'mouseout', function(e) {
+				Tip.hide();
+			});
+
 			
 			// 按钮状态的改变可能由模块外部的事件触发
 			// 因此，这部分的逻辑处理应该放在player的事件回调中
@@ -63,6 +82,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		_onMouseDown: function(e) {
+			e.halt();
 			EVENT.on(this.node, 'mousemove', this._onMouseMove, this);
 			EVENT.on(this.node, 'mouseup', this._onMouseUp, this);
 			EVENT.on(this.node, 'touchmove', this._onMouseMove, this);
@@ -72,10 +92,13 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		_onMouseUp: function(e) {
+			e.halt();
 			EVENT.detach(this.node, 'mousemove', this._onMouseMove, this);
 			EVENT.detach(this.node, 'mouseup', this._onMouseUp, this);
 			EVENT.detach(this.node, 'touchmove', this._onMouseMove, this);
 			EVENT.detach(this.node, 'touchend', this._onMouseUp, this);
+
+			Tip.hide();
 
 			this.player.play();
 		},
@@ -87,7 +110,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 
 			this.player.pause();
 			this.player.seekTo(sec);
-
 		},
 
 		_onTimeupdate: function(e) {
@@ -108,11 +130,28 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 
 		_bufferedPercent: function() {
 			return (this.player.getDuration()) ? this.player.getBuffered().end(0) / this.player.getDuration(): 0;	
+		},
+
+		/**
+		 * TODO: 如何获取段数???
+		 */
+		_getStoryAt: function(sec) {
+			var index = Math.floor(25 * sec / this.player.getDuration()),
+				offsetY = Math.floor(index / 5) * 60,
+				offsetX = (index % 5) * 80,
+				styleHtml = 'background-image:url(' + this.story + ');' +
+							'width:80px;' +
+							'height:60px;' +
+							'background-position:-' + offsetX + 'px -' + offsetY + 'px'
+
+			var rtDom = '<div style="' + styleHtml + '"></div>';
+			
+			return rtDom;
 		}
 	});
 
 	return Progress;
 
 }, {
-	requires: ['base', 'event', 'dom', 'node']
+	requires: ['base', 'event', 'dom', 'node', '../utils/tip']
 });

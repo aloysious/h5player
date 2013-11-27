@@ -25,7 +25,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		innerHTML: {
-			value: '<div class="dev-control-content">fullscreen</div>'
+			value: '<div class="dev-control-content"><div class="iconfont" data-status="fullscreen">&#13800</div></div>'
 		}
 	}
 
@@ -55,7 +55,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			this.player.on('fullscreenchange', this._onFullscreenChange, this);
 		},
 
-		_onFullscreen: function() {
+		_onFullscreen: function(e) {
+			e.halt();
+
 			if (!this.player.getIsFullScreen()) {
 				this.player.requestFullScreen();	
 			} else {
@@ -68,12 +70,12 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			if (!this.player.getIsFullScreen()) {
 				this.node.removeClass('dev-non-fullscreen');
 				this.node.addClass('dev-fullscreen');
-				this.node.one('.dev-control-content').html('fullscreen');
+				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="fullscreen">&#13800</div>');
 			
 			} else {
 				this.node.removeClass('dev-fullscreen');
 				this.node.addClass('dev-non-fullscreen');
-				this.node.one('.dev-control-content').html('non-fullscreen');
+				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="non-fullscreen">&#13796</div>');
 			}
 		}
 	});
