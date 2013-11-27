@@ -1,5 +1,6 @@
 /**
  * @fileoverview 播放器模块
+ * @author       aloysious.ld@taobao.com
  */
 KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 
@@ -18,11 +19,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 	}
 
 	Player.ATTRS = {
-		// 占位静态图片
-		poster: {
-			value: null
-		},
-
 	    // 是否预加载
 		preload: {
 			value: false
@@ -38,7 +34,21 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			value: false
 		},
 
-		// TODO:控制面板配置，filters, plugins 
+		// 控制面板配置。
+		// 默认的基础功能有：播放按钮，时间进度，静音按钮，音量条，全屏按钮，进度条。
+		// 可配置filters，屏蔽默认的基础功能；
+		// 可配置plugins，扩展控制面板功能，此时cfg作为扩展模块的第三个入参传入扩展模块实例，
+		// 前两个参数约定为控制面板的Node对象实例，和player对象实例。
+		// 例如：
+		// controls: {
+		//     fitlers: ['timedisplay', 'volume'],
+		//     plugins: [
+		//         {
+		//             fn: Collect,
+		//             cfg: {XXXX}
+		//         }
+		//     ]
+		// }
 		controls: {
 			value: null
 		},
@@ -54,16 +64,35 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		// 播放列表数组
+		// 数组的每个元素为一个媒体源的对象
+		// 例如：
+		// playlist: [
+		//     {
+		//          source: 'path/to/mp4',
+		//          type: 'video/mp4',
+		//          poster: 'path/to/poster',    // 媒体源的封面静态图片地址
+		//          story: 'path/to/story'       // 媒体源的进度缩略图
+		//     }
+		// ]
 		playlist: {
 			value: []
 		},
 
-		// 字母列表数组
+		// TODO:字母列表数组
 		tracklist: {
 			value: []
 		},
 
-		// 初始化的播放源，优先级低于playlist
+		// 初始化的播放源
+		// 优先级低于playlist，即如果playlist中存在元素，则优先使用playlist中的元素作为初始化源
+		// src为一个媒体源对象
+		// 例如：
+		// src: {
+		//     source: 'path/to/mp4',
+		//     type: 'video/mp4',
+		//     poster: 'path/to/poster',
+		//     story: 'path/to/story'
+		// }
 		src: {
 			value: null
 		},
@@ -73,7 +102,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			value: 0
 		},
 
-		// 皮肤
+		// 播放器的皮肤钩子类名
 		defaultSkin: {
 			value: 'dev-default-skin'
 		}
@@ -82,7 +111,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 	S.extend(Player, Base, {
 
 		init: function() {
-			// your code here
 			this.controls = this.get('controls');
 			this.playlist = this.get('playlist');
 			this.playlistIndex = this.get('playlistIndex');
@@ -102,14 +130,16 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		renderUI: function() {
 			// 添加默认皮肤前缀
 			this.con.addClass(this.get('defaultSkin'));
+			
 			this.con.css({
 				width: this.get('width'),
 				height: this.get('height')
 			});
 			
+			// 创建video标签
 			this._createVideoTag();
 			
-			// 如果需要使用用户自定义的控制面板
+			// 如果需要使用用户自定义的控制面板，则创建之
 			if (this.controls !== null && this.controls !== 'default') {
 				this._createControlsPanel();
 			}
@@ -117,6 +147,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 
 		bindUI: function() {
 			var that = this,
+				// html5 media element API提供的事件列表
 				mediaEvents = 'loadstart,suspend,abort,error,emptied,stalled,' +
 							  'loadedmetadata,loadeddata,canplay,canplaythrough,' +
 							  'playing,waiting,seeking,seeked,ended,durationchange,' +
@@ -127,11 +158,13 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			// 用player模拟media element的事件响应
 			S.each(mediaEvents, function(eventName) {
 				EVENT.on(that.videoTag, eventName, function(e) {
+					// 将原生的事件对象传递给player的自定义事件，
+					// 便于后续处理
 					that.fire(eventName, {rawEvent: e});
 				});
 			});
 
-			// 全屏事件
+			// 处理全屏事件响应
 			this.on('fullscreenchange', function() {
 				if (that.isFullScreen) {
 					that.con.addClass('dev-fullscreen');
@@ -147,7 +180,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				}
 			});
 
-			// 移动设备下激活控制版面，或控制播放
+			// 主要针对移动设备，
+			// 第一次触碰屏幕时激活控制面板，
+			// 激活后再触碰屏幕才能暂停或继续播放
 			EVENT.on(this.con, 'click', function() {
 				if (!that.hasCustomedControls()) {
 					return;
@@ -165,7 +200,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				}
 			});
 
-			// 桌面系统，鼠标划过时激活控制面板
+			// 主要针对桌面系统，鼠标划过时激活控制面板
 			EVENT.on(this.con, 'mousemove', function() {
 				if (that.hasCustomedControls()) {
 					that.activeControls();
@@ -175,7 +210,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
-		 * 创建video标签，如果初始化的页面中已存在video标签，则js配置信息无效？？？
+		 * 创建video标签，如果初始化的页面中已存在video标签，则js配置信息无效
+		 * @return undefined
 		 */
 		_createVideoTag: function() {
 			var videoNode = this.con.one('video');
@@ -186,7 +222,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 					controls = this.controls === 'default'? true: false,
 					videoDom = DOM.create('<video>', {
 						src: src.source,
-						poster: this.get('poster') || src.poster,
+						poster: src.poster || '',
 						preload: this.get('preload'),
 						autoplay: this.get('autoplay'),
 						loop: this.get('loop'),
@@ -199,19 +235,24 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				videoNode = this.con.one('video');
 			}
 
+			// 获取video标签的原生media element对象
 			this.videoTag = videoNode.getDOMNode();
 		},
 
 		/**
-		 * TODO:创建用户自定义的控制面板
+		 * 创建用户自定义的控制面板
+		 * @return undefined
 		 */
 		_createControlsPanel: function() {
 			this.controlsPanel = new ControlsPanel(this.id, this, this.controls);
+			
+			// 初始状态下需激活控制面板
 			this.activeControls();
 		},
 
 		/**
-		 * TODO:检测fullscreen的支持情况，即时函数
+		 * 检测fullscreen的支持情况，即时函数
+		 * @return undefined
 		 */
 		_supportFullscreen: (function() {
 			var prefix, requestFS, div;
@@ -219,14 +260,14 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			div = DOM.create('<div></div>');
 			requestFS = {};
 
-			// W3C标准
+			// 如果浏览器实现了W3C标准的定义
 			if (div.cancelFullscreen !== undefined) {
 				requestFS.requestFn = 'requestFullscreen';
 				requestFS.cancelFn = 'cancelFullscreen';
 				requestFS.eventName = 'fullscreenchange';
 				requestFS.isFullScreen = 'fullScreen';
 			
-			// webkit和mozilla的方法调用需要带前缀
+			// 如果是webkit和mozilla内核，调用全屏接口时需要带前缀
 			} else {
 				if (document.mozCancelFullScreen) {
 					prefix = 'moz';
@@ -247,16 +288,21 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				return requestFS;
 			}
 
+			// 如果浏览器不支持全屏接口，返回null
 			return null;
-		})(),
+		})(),   // 注意，即时函数
 
 		/**
-		 * TODO:不支持fullscreenAPI时的全屏模拟
+		 * TODO
+		 * 不支持fullscreenAPI时的全屏模拟
+		 * @return undefined
 		 */
 		_enterFullWindow: function() {},
 		
 		/**
-		 * TODO:不支持fullscreenAPI时的取消全屏模拟
+		 * TODO
+		 * 不支持fullscreenAPI时的取消全屏模拟
+		 * @return undefined
 		 */
 		_exitFullWindow: function() {},
 	
@@ -268,12 +314,21 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		
 		// ******************** 视频读取和队列相关 *********************
 		/**
-		 * TODO:通过id读取视频
+		 * TODO
+		 * 通过id读取视频
+		 * @param vid       {String} video ID
+		 * @param startTime {Number} 开始的时刻，以秒为单位
+		 * @param quality   {String} 视频质量，暂时未实现
+		 * @return undefined
 		 */
 		loadById: function(vid, startTime, quality) {},
 
 		/**
-		 * TODO:通过url读取视频
+		 * 通过url读取视频
+		 * @param url       {String} 视频源的地址
+		 * @param startTime {Number} 开始的时刻，以秒为单位
+		 * @param quality   {String} 视频质量，暂时未实现
+		 * @return undefined
 		 */
 		loadByUrl: function(url, startTime, quality) {
 			this.videoTag.src = url;
@@ -281,7 +336,12 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
-		 * TODO:读取视频列表
+		 * 读取视频列表
+		 * @param list       {Array}  视频列表数组，数组元素的结构参考playlist
+		 * @param firstIndex {Number} 第一个播放的视频序号
+		 * @param startTime  {Number} 第一个视频的开始时刻，以秒为单位
+		 * @param quality    {String} 视频质量，暂时未实现
+		 * @return undefined
 		 */
 		loadPlaylist: function(list, firstIndex, startTime, quality) {
 			this.playlist = list;
@@ -292,40 +352,47 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		
 		// ******************** 视频控制和配置相关 *********************
 		/**
-		 * TODO:播放视频
+		 * 播放视频
+		 * @return undefined
 		 */
 		play: function() {
 			this.videoTag.play();
 		},
 
 		/**
-		 * TODO:暂停视频
+		 * 暂停视频
+		 * @return undefined
 		 */
 		pause: function() {
 			this.videoTag.pause();
 		},
 
 		/**
-		 * TODO:视频是否暂停
+		 * 视频是否暂停
+		 * @return undefined
 		 */
 		paused: function() {
 			return this.videoTag.paused;
 		},
 
 		/**
-		 * TODO:终止视频
+		 * TODO
+		 * 终止视频
+		 * @return undefined
 		 */
 		stop: function() {},
 
 		/**
-		 * TODO:推进视频到特定的时刻
+		 * 推进视频到特定的时刻，开启搜寻
+		 * @return undefined
 		 */
 		seekTo: function(time) {
 			this.videoTag.currentTime = time;
 		},
 
 		/**
-		 * TODO:播放列表中的下一个视频
+		 * 播放列表中的下一个视频
+		 * @return {Boolean} 是否存在下一个可以播放的视频源
 		 */
 		nextVideo: function() {
 			if (this.playlistIndex < (this.playlist.length - 1)) {
@@ -336,7 +403,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
-		 * TODO:播放列表中的前一个视频
+		 * 播放列表中的前一个视频
+		 * @return {Boolean} 是否存在前一个可以播放的视频源
 		 */
 		prevVideo: function() {
 			if (this.playlistIndex > 0) {
@@ -347,7 +415,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
-		 * TODO:播放列表中特定的一个视频
+		 * 播放列表中特定的一个视频
+		 * @return {Boolean} 是否存在视频源
 		 */
 		playVideoAt: function(index) {
 			var src = this.playlist[index];
@@ -362,76 +431,88 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
-		 * TODO:设置为静音
+		 * 设置为静音
+		 * @return undefined
 		 */
 		mute: function() {
 			this.videoTag.muted = true;
 		},
 
 		/**
-		 * TODO:取消静音
+		 * 取消静音
+		 * @return undefined
 		 */
 		unmute: function() {
 			this.videoTag.muted = false;
 		},
 
 		/**
-		 * TODO:当前是否为静音
+		 * 当前是否为静音
+		 * @return {Boolean} 是否为静音
 		 */
 		isMuted: function() {
 			return this.videoTag.muted;
 		},
 
 		/**
-		 * TODO:设置音量
+		 * 设置音量
+		 * @param vol {Number} 音量值，可选值为0.0至1.0
+		 * @return undefined
 		 */
 		setVolume: function(vol) {
 			this.videoTag.volume = vol;
 		},
 
 		/**
-		 * TODO:获取音量
+		 * 获取音量
+		 * @return {Number} 音量值，0.0至1.0
 		 */
 		getVolume: function() {
 			return this.videoTag.volume;
 		},
 
 		/**
-		 * TODO:设置播放速率
+		 * 设置播放速率
+		 * @param rate {Number} 播放速率
+		 * @return undefined
 		 */
 		setPlaybackRate: function(rate) {
 			this.videoTag.playbackRate = rate;
 		},
 
 		/**
-		 * TODO:获取播放速率
+		 * 获取播放速率
+		 * @return {Number} 播放速率
 		 */
 		getPlaybackRate: function() {
 			return this.videoTag.playbackRate;
 		},
 
 		/**
-		 * TODO:设置播放器静态占位图片
+		 * 设置播放器静态占位图片
+		 * @param posterUrl {String} 图片地址
+		 * @return undefined
 		 */
 		setPoster: function(posterUrl) {
 			this.videoTag.poster = posterUrl;
 		},
 
 		/**
-		 * TODO:设置全屏
+		 * 设置全屏
+		 * @return undefined
 		 */
 		requestFullScreen: function() {
 			var requestFullScreen = this._supportFullscreen,
 				conTag = this.con.getDOMNode(),
 				that = this;
 
-
 			this.isFullScreen = true;
 
+			// 如果浏览器支持全屏接口
 			if (requestFullScreen) {
 				EVENT.on(document, requestFullScreen.eventName, function(e) {
 					that.isFullScreen = document[requestFullScreen.isFullScreen];
-
+					
 					if (that.isFullScreen === false) {
 						EVENT.detach(document, requestFullScreen.eventName);
 					}
@@ -441,6 +522,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 
 				conTag[requestFullScreen.requestFn]();
 			
+			// 如果不支持全屏接口，则模拟实现
 			} else {
 				this._enterFullWindow();
 				this.fire('fullscreenchange');
@@ -448,7 +530,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
-		 * TODO:取消全屏
+		 * 取消全屏
+		 * @return undefined
 		 */
 		cancelFullScreen: function() {
 			var requestFullScreen = this._supportFullscreen;
@@ -465,31 +548,54 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		},
 
 		/**
-		 * TODO:是否处于全屏
+		 * 是否处于全屏
+		 * @return {Boolean} 是否为全屏
 		 */
 		getIsFullScreen: function() {
 			return this.isFullScreen;
 		},
 
+		/**
+		 * 是否自定义控制面板
+		 * @return {Boolean} 是否自定义
+		 */
 		hasCustomedControls: function() {
 			return !!this.controlsPanel;
 		},
 
+		/**
+		 * 控制面板是否显示
+		 * @return {Boolean} 是否显示
+		 */
 		isControlsShown: function() {
 			return this.controlsPanel && this.controlsPanel.isShown();
 		},
 
+		/**
+		 * 显示控制面板
+		 * @return undefined
+		 */
 		showControls: function() {
 			this.controlsPanel && this.controlsPanel.show();
 		},
 
+		/**
+		 * 隐藏控制面板
+		 * @return undefined
+		 */
 		hideControls: function() {
 			this.controlsPanel && this.controlsPanel.hide();
 		},
 
+		/**
+		 * 激活控制面板，先显示控制面板，再启动自动隐藏的倒计时
+		 * 3秒后自动隐藏面板
+		 * @return undefined
+		 */
 		activeControls: function() {
 			var that = this;
 
+			// 激活时先重置计时器
 			if (this.controlsTimeout) {
 				clearTimeout(this.controlsTimeout);
 			}
@@ -502,45 +608,52 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 
 		// ****************** 播放状态相关 **********************
 		/**
-		 * TODO:获取当前播放时间
+		 * 获取当前播放时间
+		 * @return {Number} 当前播放时间，单位为秒
 		 */
 		getCurrentTime: function() {
 			return this.videoTag.currentTime;
 		},
 
 		/**
-		 * TODO:获取总播放时间
+		 * 获取总播放时间
+		 * @return {Number} 总播放时间，单位为秒
 		 */
 		getDuration: function() {
 			return this.videoTag.duration;
 		},
 
 		/**
-		 * TODO:获取已经缓存的时间
+		 * 获取已经缓存的时间区间
+		 * @return {Array} 时间区间数组timeRanges
 		 */
 		getBuffered: function() {
 			return this.videoTag.buffered;
 		},
 
 		/**
-		 * TODO:设置播放质量
+		 * TODO
+		 * 设置播放质量
 		 */
 		setPlaybackQuality: function(quality) {},
 
 		/**
-		 * TODO:获取播放质量
+		 * TODO
+		 * 获取播放质量
 		 */
 		getPlaybackQuality: function() {},
 
 		/**
-		 * TODO:获取播放列表
+		 * 获取播放列表
+		 * @return {Array} 播放列表数组，元素结构参考playlist
 		 */
 		getPlaylist: function() {
 			return this.playlist;
 		},
 
 		/**
-		 * TODO:获取当前播放的视频在列表中的序号
+		 * 获取当前播放的视频在列表中的序号
+		 * @return {Number} 当前播放序号
 		 */
 		getPlaylistIndex: function() {
 			return this.playlistIndex;
