@@ -75,12 +75,23 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 			EVENT.detach(this.node, 'mouseup', this._onMouseUp, this);
 			EVENT.detach(this.node, 'touchmove', this._onMouseMove, this);
 			EVENT.detach(this.node, 'touchend', this._onMouseUp, this);
+			
+			// 结束拖动时，允许控制面板隐藏
+			this.player.activeControls();
 		},
 
 		_onMouseMove: function(e) {
-			var distance = e.pageX - this.node.offset().left,
+			e.halt();
+
+			var pageX = e.touches? e.touches[0].pageX: e.pageX,
+				distance = pageX - this.node.offset().left,
 				width = this.node.width(),
 				vol = distance / width;
+			
+			// 拖动时，控制面板禁止隐藏
+			this.player.deactiveControls();
+
+			vol = vol < 0? 0: (vol > 1? 1: vol);
 
 			this.player.setVolume(vol);
 			if (this.player.isMuted()) {

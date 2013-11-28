@@ -39,6 +39,14 @@
 .dev-default-skin video {
   background-color: #000;
 }
+.dev-default-skin .dev-vtt-control {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: auto;
+  bottom: 35px;
+  text-align: center;
+}
 .dev-default-skin .dev-controls-panel {
   position: absolute;
   left: 0;

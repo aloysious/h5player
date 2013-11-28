@@ -55,25 +55,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 		bindUI: function() {
 			EVENT.on(this.node, 'mousedown', this._onMouseDown, this);
 			EVENT.on(this.node, 'touchstart', this._onMouseDown, this);
-
-
-			EVENT.on(this.node, 'mousemove', function(e) {
-				var distance = e.pageX - this.node.offset().left,
-					width = this.node.width(),
-					sec = (this.player.getDuration()) ? distance / width * this.player.getDuration(): 0,
-					currSrc = this.player.getPlaylist()[this.player.getPlaylistIndex()];
-				
-				if (currSrc && currSrc.story) {
-					this.story = currSrc.story;
-					var content = this._getStoryAt(sec);
-					Tip.update(content, e);
-					Tip.show();
-				}
-			}, this);
-			EVENT.on(this.node, 'mouseout', function(e) {
-				Tip.hide();
-			});
-
 			
 			// 按钮状态的改变可能由模块外部的事件触发
 			// 因此，这部分的逻辑处理应该放在player的事件回调中
@@ -87,7 +68,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 			EVENT.on(this.node, 'mouseup', this._onMouseUp, this);
 			EVENT.on(this.node, 'touchmove', this._onMouseMove, this);
 			EVENT.on(this.node, 'touchend', this._onMouseUp, this);
-
+			// 临时停止更新当前时间进度
+			this.player.detach('timeupdate', this._onTimeupdate, this);
+			
 			this._onMouseMove(e);
 		},
 
@@ -97,39 +80,59 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 			EVENT.detach(this.node, 'mouseup', this._onMouseUp, this);
 			EVENT.detach(this.node, 'touchmove', this._onMouseMove, this);
 			EVENT.detach(this.node, 'touchend', this._onMouseUp, this);
+			// 重启更新当前时间进度
+			this.player.on('timeupdate', this._onTimeupdate, this);
+			
+			// 设置当前时间，播放视频
+			var sec = this.playedNode.width() / this.node.width() * this.player.getDuration();
+			this.player.seekTo(sec);
+			this.player.play();
+
+			// 结束拖动时，允许控制面板隐藏
+			this.player.activeControls();
 
 			Tip.hide();
-
-			this.player.play();
 		},
 
 		_onMouseMove: function(e) {
-			var distance = e.pageX - this.node.offset().left,
-				width = this.node.width(),
-				sec = (this.player.getDuration()) ? distance / width * this.player.getDuration(): 0;
+			e.halt();
 
-			this.player.pause();
-			this.player.seekTo(sec);
+			var pageX = e.touches? e.touches[0].pageX: e.pageX,
+				distance = pageX - this.node.offset().left,
+				width = this.node.width(),
+				sec = (this.player.getDuration()) ? distance / width * this.player.getDuration(): 0,
+				currSrc = this.player.getPlaylist()[this.player.getPlaylistIndex()];
+			
+			// 拖动时，控制面板禁止隐藏
+			this.player.deactiveControls();
+
+			this._updateProgressBar(this.playedNode, sec);
+			
+			// 显示story缩略图
+			if (currSrc && currSrc.story) {
+				this.story = currSrc.story;
+				var content = this._getStoryAt(sec);
+				Tip.update(content, e);
+				Tip.show();
+			}
 		},
 
 		_onTimeupdate: function(e) {
-			this.playedNode.css({
-				width: (this._playedPercent() * 100) + '%'
-			});
-		},
-
-		_playedPercent: function() {
-			return (this.player.getDuration()) ? this.player.getCurrentTime() / this.player.getDuration(): 0;	
+			this._updateProgressBar(this.playedNode, this.player.getCurrentTime());
 		},
 
 		_onProgress: function(e) {
-			this.loadedNode.css({
-				width: (this._bufferedPercent() * 100) + '%'
-			});	
+			// 此时buffer可能还没有准备好
+			if (this.player.getDuration()) {
+				this._updateProgressBar(this.loadedNode, this.player.getBuffered().end(0));
+			}
 		},
 
-		_bufferedPercent: function() {
-			return (this.player.getDuration()) ? this.player.getBuffered().end(0) / this.player.getDuration(): 0;	
+		_updateProgressBar: function(node, sec) {
+			var percent = (this.player.getDuration()) ? sec / this.player.getDuration(): 0;	
+			node.css({
+				width: (percent * 100) + '%'
+			});	
 		},
 
 		/**
@@ -142,7 +145,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 				styleHtml = 'background-image:url(' + this.story + ');' +
 							'width:80px;' +
 							'height:60px;' +
-							'background-position:-' + offsetX + 'px -' + offsetY + 'px'
+							'background-position:-' + offsetX + 'px -' + offsetY + 'px';
 
 			var rtDom = '<div style="' + styleHtml + '"></div>';
 			

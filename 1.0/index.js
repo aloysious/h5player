@@ -2,7 +2,7 @@
  * @fileoverview 播放器模块
  * @author       aloysious.ld@taobao.com
  */
-KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
+KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) {
 
 	"use strict";
 
@@ -68,7 +68,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		// 例如：
 		// playlist: [
 		//     {
-		//          source: 'path/to/mp4',
+		//          src: 'path/to/mp4',
 		//          type: 'video/mp4',
 		//          poster: 'path/to/poster',    // 媒体源的封面静态图片地址
 		//          story: 'path/to/story'       // 媒体源的进度缩略图
@@ -78,22 +78,17 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			value: []
 		},
 
-		// TODO:字母列表数组
-		tracklist: {
-			value: []
-		},
-
 		// 初始化的播放源
 		// 优先级低于playlist，即如果playlist中存在元素，则优先使用playlist中的元素作为初始化源
-		// src为一个媒体源对象
+		// source为一个媒体源对象
 		// 例如：
-		// src: {
-		//     source: 'path/to/mp4',
+		// source: {
+		//     src: 'path/to/mp4',
 		//     type: 'video/mp4',
 		//     poster: 'path/to/poster',
 		//     story: 'path/to/story'
 		// }
-		src: {
+		source: {
 			value: null
 		},
 
@@ -143,6 +138,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			if (this.controls !== null && this.controls !== 'default') {
 				this._createControlsPanel();
 			}
+
 		},
 
 		bindUI: function() {
@@ -178,11 +174,16 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 				if (that.playlist.length > 0 && that.get('loop') !== true) {
 					that.nextVideo();
 				}
+			
+				// 读取字幕
+				var currSrc = this.playlist[this.playlistIndex];
+				that.loadTextTracklist(S.isArray(currSrc.textTracks)? currSrc.textTracks: []); 
 			});
 
 			// 主要针对移动设备，
 			// 第一次触碰屏幕时激活控制面板，
 			// 激活后再触碰屏幕才能暂停或继续播放
+			/*
 			EVENT.on(this.con, 'click', function() {
 				if (!that.hasCustomedControls()) {
 					return;
@@ -199,9 +200,21 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 					that.activeControls();
 				}
 			});
+			*/
 
-			// 主要针对桌面系统，鼠标划过时激活控制面板
-			EVENT.on(this.con, 'mousemove', function() {
+			EVENT.on(this.con, 'click', function() {
+				if (!that.hasCustomedControls()) {
+					return;
+				}	
+
+				if (that.isControlsShown()) {
+					that.hideControls();
+				} else {
+					that.activeControls();
+				}
+			});
+
+			EVENT.on(this.con, 'touchmove', function() {
 				if (that.hasCustomedControls()) {
 					that.activeControls();
 				}
@@ -218,11 +231,11 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 
 			// 如果初始化的页面中没有video标签，则创建之
 			if (!videoNode) {
-				var src = this.playlist.length > 0? this.playlist[this.playlistIndex]: (this.get('src')? this.get('src'): ''),
+				var source = this.playlist.length > 0? this.playlist[this.playlistIndex]: (this.get('source')? this.get('source'): {}),
 					controls = this.controls === 'default'? true: false,
 					videoDom = DOM.create('<video>', {
-						src: src.source,
-						poster: src.poster || '',
+						src: source.src || '',
+						poster: source.poster || '',
 						preload: this.get('preload'),
 						autoplay: this.get('autoplay'),
 						loop: this.get('loop'),
@@ -233,6 +246,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 
 				this.con.append(videoDom);
 				videoNode = this.con.one('video');
+
+				// 读取字幕
+				this.loadTextTracklist(S.isArray(source.textTracks)? source.textTracks: []); 
 			}
 
 			// 获取video标签的原生media element对象
@@ -349,6 +365,29 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			this.playVideoAt(this.playlistIndex);
 		},
 
+		/**
+		 * TODO
+		 * 读取特定序号的字幕
+		 */
+		loadTextTrackAt: function(index) {
+			this.textTrackControl.load(index);
+		},
+
+		/**
+		 * TODO
+		 */
+		loadTextTracklist: function(list) {
+			this.textTracklist = list;
+			if (!this.textTrackControl) {
+				this.textTrackControl = new TextTrackControl(this.id, this, {textTracklist:this.textTracklist});
+			} else {
+				this.textTrackControl.setTextTracklist(list);
+			}
+			this.textTrackControl.load();
+		},
+
+
+
 		
 		// ******************** 视频控制和配置相关 *********************
 		/**
@@ -419,14 +458,14 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 		 * @return {Boolean} 是否存在视频源
 		 */
 		playVideoAt: function(index) {
-			var src = this.playlist[index];
+			var source = this.playlist[index];
 
-			if (!src) {
+			if (!source) {
 				return false;
 			}
 
-			this.setPoster(src.poster);
-			this.loadByUrl(src.source);
+			this.setPoster(source.poster);
+			this.loadByUrl(source.src);
 			return true;
 		},
 
@@ -606,6 +645,17 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 			}, 3000);
 		},
 
+		/**
+		 * 使控制面板不会自动隐藏
+		 * @return undefined
+		 */
+		deactiveControls: function() {
+			// 激活时先重置计时器
+			if (this.controlsTimeout) {
+				clearTimeout(this.controlsTimeout);
+			}
+		},
+
 		// ****************** 播放状态相关 **********************
 		/**
 		 * 获取当前播放时间
@@ -664,5 +714,12 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel) {
 	return Player;
 
 }, {
-	requires: ['base', 'event', 'dom', 'node', 'gallery/h5player/1.0/controls/controlspanel', './index.css']
+	requires: [
+		'base', 
+		'event', 
+		'dom', 
+		'node', 
+		'gallery/h5player/1.0/controls/controlspanel', 
+		'gallery/h5player/1.0/tracks/index', 
+		'./index.css']
 });

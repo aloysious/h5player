@@ -34,13 +34,26 @@
 		var h5player = new H5player('#J_player', {
 			playlist: [
 				{
-					source: 'http://video-js.zencoder.com/oceans-clip.mp4',
+					src: 'http://video-js.zencoder.com/oceans-clip.mp4',
 					type: 'video/mp4',
 					poster: '',
-					story: 'http://gtms01.alicdn.com/tps/i1/T1vf_rFjlaXXc4E9bI-400-300.png'
+					story: 'http://gtms01.alicdn.com/tps/i1/T1vf_rFjlaXXc4E9bI-400-300.png',
+					textTracks: [
+						{
+							src: '../tracks/captions.vtt',
+							srclang: '',
+							label: '中文',
+							default: true
+						},
+						{
+							src: '../tracks/captions.vtt',
+							srclang: '',
+							label: '英文'
+						}
+					]
 				},
 				{
-					source: 'http://media.w3.org/2010/05/sintel/trailer.mp4',
+					src: 'http://media.w3.org/2010/05/sintel/trailer.mp4',
 					type: 'video/mp4',
 					poster: '',
 					story: 'http://gtms01.alicdn.com/tps/i1/T1ka74FjtaXXc4E9bI-400-300.png'
