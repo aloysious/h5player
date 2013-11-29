@@ -124,7 +124,12 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 		_onProgress: function(e) {
 			// 此时buffer可能还没有准备好
 			if (this.player.getDuration()) {
-				this._updateProgressBar(this.loadedNode, this.player.getBuffered().end(0));
+				this._updateProgressBar(this.loadedNode, this.player.getBuffered().end(this.player.getBuffered().length - 1));
+
+				console.log(this.player.getBuffered().length);
+				for (var i=0,j=this.player.getBuffered().length; i<j; i++) {
+					console.log('start:' + this.player.getBuffered().start(i) + ', end:' + this.player.getBuffered().end(i));
+				}
 			}
 		},
 

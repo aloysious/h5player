@@ -326,6 +326,44 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		//                                                            //
 		// 数字娱乐 - 视频 - html5播放器 - API                        //
 		//                                                            //
+		// loadById                                                   //
+		// loadByUrl                                                  //
+		// loadPlaylist                                               //
+		// loadTextTrackAt                                            //
+		// loadTextTracklist                                          //
+		// play                                                       //
+		// pause                                                      //
+		// paused                                                     //
+		// stop                                                       //
+		// seekTo                                                     //
+		// nextVideo                                                  //
+		// prevVideo                                                  //
+		// playVideoAt                                                //
+		// mute                                                       //
+		// unmute                                                     //
+		// ismuted                                                    //
+		// setVolume                                                  //
+		// getVolume                                                  //
+		// setPlaybackRate                                            //
+		// getPlaybackRate                                            //
+		// setPoster                                                  //
+		// requestFullScreen                                          //
+		// cancelFullScreen                                           //
+		// getIsFullScreen                                            //
+		// hasCustomedControls                                        //
+		// isControlsShown                                            //
+		// showControls                                               //
+		// hideControls                                               //
+		// activeControls                                             //
+		// deactiveControls                                           //
+		// getCurrentTime                                             //
+		// getDuration                                                //
+		// getBuffered                                                //
+		// setPlaybackQuality                                         //
+		// getPlaybackQuality                                         //
+		// getPlaylist                                                //
+		// getPlaylistIndex                                           //
+		//                                                            //
 		////////////////////////////////////////////////////////////////
 		
 		// ******************** 视频读取和队列相关 *********************

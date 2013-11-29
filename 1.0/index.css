@@ -53,6 +53,7 @@
   bottom: 0;
   width: 100%;
   padding-top: 2px;
+  background: rgba(0, 0, 0, 0.5);
 }
 .dev-default-skin .dev-control-play {
   position: relative;
@@ -81,7 +82,9 @@
   left: 0;
   right: 0;
   width: auto;
-  top: -5px;
+  height: 5px;
+  top: -30px;
+  padding-top: 25px;
 }
 .dev-default-skin .dev-control-progress .dev-progress-wrap {
   position: relative;

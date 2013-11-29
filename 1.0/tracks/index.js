@@ -70,7 +70,6 @@ KISSY.add(function (S, Base, NODE, IO) {
 					}
 				});
 
-				console.log(this.textTracklist);
 			
 			} else {
 				rtTrack = this.textTracklist[index];
@@ -187,10 +186,6 @@ KISSY.add(function (S, Base, NODE, IO) {
 
 				while (true) {
 					cue = cues[i];
-
-					if (time >= 42 && time <= 45) {
-						console.log(i);
-					}
 
 					if (cue.endTime <= time) {
 						newPrevChange = Math.max(newPrevChange, cue.endTime);

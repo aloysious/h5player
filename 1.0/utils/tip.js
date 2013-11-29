@@ -56,7 +56,7 @@ KISSY.add(function (S, Base, NODE) {
 				maxX = offset.left + moveNode.width() - this.node.width() - 4,
 				pageX = e.touches? e.touches[0].pageX: e.pageX,
 				x = pageX - this.node.width() / 2,
-				y = offset.top - this.node.height() - 10;
+				y = offset.top - this.node.height();
 
 			console.log(minX);
 
