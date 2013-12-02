@@ -403,14 +403,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 				that.loadTextTracklist(S.isArray(currSrc.textTracks)? currSrc.textTracks: []); 
 			});
 
-			this.on(EVENTS.ERROR_TEXT_TRACK, function() {
-				that.tracklistIndex = -1;
-			});
-
-			this.on(EVENTS.LOADED_TEXT_TRACK, function(e) {
-				that.tracklistIndex = e.currIndex;
-			});
-
 			// 主要针对移动设备，
 			// 第一次触碰屏幕时激活控制面板，
 			// 激活后再触碰屏幕才能暂停或继续播放
@@ -1042,6 +1034,16 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		getTracklistIndex: function() {
 			return this.textTracklistIndex;
+		},
+		
+		/**
+		 * 设置当前字幕在列表中的序号
+		 *
+		 * @method setTracklistIndex
+		 * @param index {Number} 当前字幕序号
+		 */
+		setTracklistIndex: function(index) {
+			return this.textTracklistIndex = index;
 		}
 
 	});

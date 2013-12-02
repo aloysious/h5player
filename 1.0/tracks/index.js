@@ -279,6 +279,7 @@ KISSY.add(function (S, Base, NODE, IO) {
 			// 如果找不到字幕轨道序号
 			if (currIndex === -1) {
 				this.hide();
+				this.player.setTracklistIndex(-1);
 				this.player.fire('errortexttrack');
 				return;
 			}
@@ -289,12 +290,12 @@ KISSY.add(function (S, Base, NODE, IO) {
 				success: function(data) {
 					that._parseCues(data);
 					that.show();
-					that.player.fire('loadedtexttrack', {
-						index: currIndex
-					});
+					that.player.setTracklistIndex(currIndex);
+					that.player.fire('loadedtexttrack');
 				},
 				error: function() {
 					that.hide();
+					that.player.setTracklistIndex(-1);
 					that.player.fire('errortexttrack');
 				}
 			});

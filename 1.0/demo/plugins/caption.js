@@ -51,9 +51,9 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 
 			this.player.on('loadedmetadata', function() {
 				// 保证在player.textTracklist更新后执行
-				setTimeout(function() {
-					that._updateSelectList();
-				}, 0);
+				//setTimeout(function() {
+				//	that._updateSelectList();
+				//}, 0);
 			});
 
 			EVENT.delegate(this.node, 'change', '.dev-caption-select', function() {
@@ -69,12 +69,17 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 				that.player.loadTextTrackAt(selectedIndex);
 				that.player.showTextTrackControl();
 			});
+
+			this.player.on('loadedtexttrack', function() {
+				that._updateSelectList();
+			});
 		
 		},
 
 		_updateSelectList: function() {
-			this.tracklist = this.player.getTracklist();
+			var that = this;
 
+			this.tracklist = this.player.getTracklist();
 
 			// 如果当前视频没有字幕，直接隐藏整个模块
 			if (this.tracklist.length === 0) {
@@ -82,9 +87,10 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 				return;
 			}
 
-			var selectInner = '<option value="-1" selected>关闭</option>';
+			var selectInner = '<option value="-1">关闭</option>';
 			S.each(this.tracklist, function(track, i) {
-				selectInner += '<option value="' + i + '">' + track.label + '</option>';
+				var selected = that.player.getTracklistIndex() == i? 'selected': '';
+				selectInner += '<option value="' + i + '" ' + selected + '>' + track.label + '</option>';
 			});
 
 			this.node.one('.dev-caption-select').html(selectInner);
