@@ -509,7 +509,16 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 432,
+            "line": 312,
+            "description": "读取当前选中的字幕完成时触发",
+            "itemtype": "event",
+            "name": "loadedtexttrack",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 438,
             "description": "创建video标签，如果初始化的页面中已存在video标签，则js配置信息无效",
             "itemtype": "method",
             "name": "_createVideoTag",
@@ -520,7 +529,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 467,
+            "line": 473,
             "description": "创建用户自定义的控制面板",
             "itemtype": "method",
             "name": "_createControlsPanel",
@@ -531,7 +540,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 480,
+            "line": 486,
             "description": "检测fullscreen的支持情况，即时函数",
             "itemtype": "method",
             "name": "_supportFullscreen",
@@ -542,7 +551,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 524,
+            "line": 530,
             "description": "TODO\n不支持fullscreenAPI时的全屏模拟",
             "itemtype": "method",
             "name": "_enterFullWindow",
@@ -553,7 +562,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 533,
+            "line": 539,
             "description": "TODO\n不支持fullscreenAPI时的取消全屏模拟",
             "itemtype": "method",
             "name": "_exitFullWindow",
@@ -564,7 +573,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 549,
+            "line": 555,
             "description": "TODO\n通过id读取视频",
             "itemtype": "method",
             "name": "loadById",
@@ -590,7 +599,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 560,
+            "line": 566,
             "description": "通过url读取视频",
             "itemtype": "method",
             "name": "loadByUrl",
@@ -616,7 +625,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 573,
+            "line": 579,
             "description": "读取视频列表",
             "itemtype": "method",
             "name": "loadPlaylist",
@@ -647,7 +656,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 588,
+            "line": 594,
             "description": "读取特定序号的字幕",
             "itemtype": "method",
             "name": "loadTextTrackAt",
@@ -663,7 +672,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 598,
+            "line": 604,
             "description": "保存字幕列表，并加载默认字幕",
             "itemtype": "method",
             "name": "loadTextTracklist",
@@ -679,7 +688,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 615,
+            "line": 621,
             "description": "播放视频",
             "itemtype": "method",
             "name": "play",
@@ -688,7 +697,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 624,
+            "line": 630,
             "description": "暂停视频",
             "itemtype": "method",
             "name": "pause",
@@ -697,7 +706,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 633,
+            "line": 639,
             "description": "视频是否暂停",
             "itemtype": "method",
             "name": "paused",
@@ -710,7 +719,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 643,
+            "line": 649,
             "description": "TODO\n终止视频",
             "itemtype": "method",
             "name": "stop",
@@ -719,7 +728,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 651,
+            "line": 657,
             "description": "推进视频到特定的时刻，开启搜寻",
             "itemtype": "method",
             "name": "seekTo",
@@ -735,7 +744,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 661,
+            "line": 667,
             "description": "播放列表中的下一个视频",
             "itemtype": "method",
             "name": "nextVideo",
@@ -748,7 +757,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 675,
+            "line": 681,
             "description": "播放列表中的前一个视频",
             "itemtype": "method",
             "name": "prevVideo",
@@ -761,7 +770,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 689,
+            "line": 695,
             "description": "播放列表中特定的一个视频",
             "itemtype": "method",
             "name": "playVideoAt",
@@ -781,7 +790,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 708,
+            "line": 714,
             "description": "设置为静音",
             "itemtype": "method",
             "name": "mute",
@@ -790,7 +799,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 717,
+            "line": 723,
             "description": "取消静音",
             "itemtype": "method",
             "name": "unmute",
@@ -799,7 +808,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 726,
+            "line": 732,
             "description": "当前是否为静音",
             "itemtype": "method",
             "name": "isMuted",
@@ -812,7 +821,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 736,
+            "line": 742,
             "description": "设置音量",
             "itemtype": "method",
             "name": "setVolume",
@@ -828,7 +837,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 746,
+            "line": 752,
             "description": "获取音量",
             "itemtype": "method",
             "name": "getVolume",
@@ -841,7 +850,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 756,
+            "line": 762,
             "description": "设置播放速率",
             "itemtype": "method",
             "name": "setPlaybackRate",
@@ -857,7 +866,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 766,
+            "line": 772,
             "description": "获取播放速率",
             "itemtype": "method",
             "name": "getPlaybackRate",
@@ -870,7 +879,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 776,
+            "line": 782,
             "description": "设置播放器静态占位图片",
             "itemtype": "method",
             "name": "setPoster",
@@ -886,7 +895,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 786,
+            "line": 792,
             "description": "设置全屏",
             "itemtype": "method",
             "name": "requestFullScreen",
@@ -895,7 +904,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 819,
+            "line": 825,
             "description": "取消全屏",
             "itemtype": "method",
             "name": "cancelFullScreen",
@@ -904,7 +913,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 838,
+            "line": 844,
             "description": "是否处于全屏",
             "itemtype": "method",
             "name": "getIsFullScreen",
@@ -917,7 +926,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 848,
+            "line": 854,
             "description": "是否自定义控制面板",
             "itemtype": "method",
             "name": "hasCustomedControls",
@@ -930,7 +939,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 858,
+            "line": 864,
             "description": "控制面板是否显示",
             "itemtype": "method",
             "name": "isControlsShown",
@@ -943,7 +952,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 868,
+            "line": 874,
             "description": "显示控制面板",
             "itemtype": "method",
             "name": "showControls",
@@ -952,7 +961,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 877,
+            "line": 883,
             "description": "隐藏控制面板",
             "itemtype": "method",
             "name": "hideControls",
@@ -961,7 +970,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 886,
+            "line": 892,
             "description": "激活控制面板，先显示控制面板，再启动自动隐藏的倒计时\n3秒后自动隐藏面板",
             "itemtype": "method",
             "name": "activeControls",
@@ -970,7 +979,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 906,
+            "line": 912,
             "description": "使控制面板不会自动隐藏",
             "itemtype": "method",
             "name": "deactiveControls",
@@ -979,7 +988,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 920,
+            "line": 926,
             "description": "获取当前播放时间",
             "itemtype": "method",
             "name": "getCurrentTime",
@@ -992,7 +1001,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 930,
+            "line": 936,
             "description": "获取总播放时间",
             "itemtype": "method",
             "name": "getDuration",
@@ -1005,7 +1014,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 940,
+            "line": 946,
             "description": "获取已经缓存的时间区间",
             "itemtype": "method",
             "name": "getBuffered",
@@ -1018,7 +1027,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 950,
+            "line": 956,
             "description": "TODO\n设置播放质量",
             "itemtype": "method",
             "name": "setPlaybackQuality",
@@ -1034,7 +1043,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 959,
+            "line": 965,
             "description": "TODO\n获取播放质量",
             "itemtype": "method",
             "name": "getPlaybackQuality",
@@ -1047,7 +1056,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 968,
+            "line": 974,
             "description": "获取播放列表",
             "itemtype": "method",
             "name": "getPlaylist",
@@ -1060,7 +1069,7 @@
         },
         {
             "file": "1.0/index.js",
-            "line": 978,
+            "line": 984,
             "description": "获取当前播放的视频在列表中的序号",
             "itemtype": "method",
             "name": "getPlaylistIndex",

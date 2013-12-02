@@ -42,6 +42,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 			// your code here
 			this.filters = this.get('filters');
 			this.include = this.get('include');
+			this.plugins = this.get('plugins');
+			this.children = [];
 			this.render();
 		},
 
@@ -56,16 +58,32 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 
 		renderUI: function() {
 			var className = 'dev-controls-panel',
-				controlsDom = DOM.create('<div class="' + className + '"></div>');
+				controlsDom = DOM.create('<div class="' + className + '"></div>'),
+				that = this;
+
 			this.con.append(controlsDom);
 			this.controlsNode = this.con.one('.' + className);
 			
+			// 默认功能模块
 			this.playToggle = 'playtoggle' in this.filters? null: new PlayToggle(this.controlsNode, this.player);
+			this.children.push(this.PlayToggle);
 			this.timeDisplay = 'timedisplay' in this.filters? null: new TimeDisplay(this.controlsNode, this.player);
+			this.children.push(this.timeDisplay);
 			this.progress = 'progress' in this.filters? null: new Progress(this.controlsNode, this.player);
+			this.children.push(this.progress);
 			this.fullscreen = 'fullscreen' in this.filters? null: new Fullscreen(this.controlsNode, this.player);
+			this.children.push(this.fullscreen);
 			this.volume = 'volume' in this.filters? null: new Volume(this.controlsNode, this.player);
+			this.children.push(this.volume);
 			this.muteToggle = 'mutetoggle' in this.filters? null: new MuteToggle(this.controlsNode, this.player);
+			this.children.push(this.muteToggle);
+
+			// 插件
+			S.each(this.plugins, function(plugin) {
+				var plg = new plugin.fn(that.controlsNode, that.player, plugin.cfg);
+				that.children.push(plg);
+			});
+
 		},
 
 		// 防止控制面板的点击事件冒泡

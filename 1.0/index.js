@@ -307,7 +307,19 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * 全屏或取消全屏时触发
 		 * @event fullscreenchange
 		 */
-		FULLSCREEN_CHANGE: 'fullscreenchange'
+		FULLSCREEN_CHANGE: 'fullscreenchange',
+		
+		/**
+		 * 读取当前选中的字幕完成时触发
+		 * @event loadedtexttrack
+		 */
+		LOADED_TEXT_TRACK: 'loadedtexttrack',
+		
+		/**
+		 * 读取当前选中的字幕错误时触发
+		 * @event loadedtexttrack
+		 */
+		ERROR_TEXT_TRACK: 'errortexttrack'
 	
 	};
 
@@ -317,7 +329,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 			this.controls = this.get('controls');
 			this.playlist = this.get('playlist');
 			this.playlistIndex = this.get('playlistIndex');
-			this.tracklist = this.get('tracklist');
+			this.textTracklist = [];
+			this.textTracklistIndex = -1;
 			this.render();
 		},
 
@@ -382,9 +395,20 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 					that.nextVideo();
 				}
 			
-				// 读取字幕
+			});
+
+			// 在metadata准备好时开始读取字幕
+			this.on(EVENTS.LOADED_METADATA, function() {
 				var currSrc = this.playlist[this.playlistIndex];
 				that.loadTextTracklist(S.isArray(currSrc.textTracks)? currSrc.textTracks: []); 
+			});
+
+			this.on(EVENTS.ERROR_TEXT_TRACK, function() {
+				that.tracklistIndex = -1;
+			});
+
+			this.on(EVENTS.LOADED_TEXT_TRACK, function(e) {
+				that.tracklistIndex = e.currIndex;
 			});
 
 			// 主要针对移动设备，
@@ -455,9 +479,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 
 				this.con.append(videoDom);
 				videoNode = this.con.one('video');
-
-				// 读取字幕
-				this.loadTextTracklist(S.isArray(source.textTracks)? source.textTracks: []); 
 			}
 
 			// 获取video标签的原生media element对象
@@ -915,6 +936,24 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 			}
 		},
 
+		/**
+		 * 隐藏字幕同步
+		 *
+		 * @method hideTextTrackControl
+		 */
+		hideTextTrackControl: function() {
+			this.textTrackControl.hide();
+		},
+
+		/**
+		 * 现实字幕同步
+		 *
+		 * @method showTextTrackControl
+		 */
+		showTextTrackControl: function() {
+			this.textTrackControl.show();
+		},
+
 		// ****************** 播放状态相关 **********************
 		
 		/**
@@ -983,6 +1022,26 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		getPlaylistIndex: function() {
 			return this.playlistIndex;
+		},
+
+		/**
+		 * 获取当前的字幕列表
+		 *
+		 * @method getTracklist
+		 * @return {Array} 字幕列表数组
+		 */
+		getTracklist: function() {
+			return this.textTracklist;
+		},
+
+		/**
+		 * 获取当前字幕在列表中的序号
+		 *
+		 * @method getTracklistIndex
+		 * @return {Number} 当前字幕序号
+		 */
+		getTracklistIndex: function() {
+			return this.textTracklistIndex;
 		}
 
 	});
