@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>1.0/tracks/index.js - h5player</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="h5player"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/Player.html">Player</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/player.html">player</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: 1.0/tracks/index.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * @fileoverview 字幕同步模块，字幕文件的读取，解析，同步显示
+ */
+KISSY.add(function (S, Base, NODE, IO) {
+
+	&quot;use strict&quot;;
+
+	function TextTrackControl(id, player, cfg) {
+		if (this instanceof TextTrackControl) {
+
+			this.con = NODE.one(id);
+			this.player = player;
+
+			TextTrackControl.superclass.constructor.call(this, cfg);
+			this.init();
+
+		} else {
+			return new TextTrackControl(id, player, cfg);
+		}
+	}
+
+	TextTrackControl.ATTRS = {
+		textTracklist: {
+			value: []
+		}
+	};
+
+	S.extend(TextTrackControl, Base, {
+
+		init: function() {
+			this.textTracklist = this.get(&#x27;textTracklist&#x27;);
+			this.cues = [];
+			this.render();
+
+		},
+
+		destory: function(){
+
+		},
+
+		render: function() {
+			this.renderUI();
+			this.bindUI();
+		},
+
+		renderUI: function() {
+			this.con.append(&#x27;&lt;div class=&quot;dev-vtt-control&quot;&gt;&lt;/div&gt;&#x27;);
+			this.node = this.con.one(&#x27;.dev-vtt-control&#x27;);
+		},
+
+		bindUI: function() {
+			this.player.on(&#x27;timeupdate&#x27;, this._onTimeUpdate, this);
+		},
+
+		/**
+		 * 在列表中寻找相应的字幕轨道，
+		 * 如果index没有越界，直接取this.textTracklist[index],
+		 * 如果越界，或者没有传入index，取第一个设置有default的字幕轨道，
+		 * 如果没有default轨道，返回null
+		 */
+		_findTrackAt: function(index) {
+			var rtTrack = null;
+
+			if (index === undefined || index === null || 
+					index &lt; 0 || index &gt; (this.textTracklist.length - 1)) {
+				S.each(this.textTracklist, function(track) {
+					if (track.default === true) {
+						rtTrack = track;
+						return false;
+					}
+				});
+
+			
+			} else {
+				rtTrack = this.textTracklist[index];
+			}
+
+			return rtTrack;
+		},
+
+		/**
+		 * 解析字幕文件中的轨道信息保存到this.cues中
+		 */
+		_parseCues: function(vttContent) {
+			var cue, time, text,
+				lines = vttContent.split(&#x27;\n&#x27;),
+				line = &#x27;&#x27;, 
+				id;
+
+			for (var i = 1, j = lines.length; i &lt; j; i++) {
+				//0行为&#x27;WEBVTT&#x27;，直接忽略，从1开始
+
+				line = S.trim(lines[i]);
+
+				if (line) {
+					if (line.indexOf(&#x27;--&gt;&#x27;) == -1) {
+						id = line;
+						line = S.trim(lines[++i]);
+					
+					} else {
+						id = this.cues.length;
+					}
+
+					cue = {
+						id: id,
+						index: this.cues.length
+					};
+
+					time = line.split(&#x27; --&gt; &#x27;);
+					cue.startTime = this._parseCueTime(time[0]);
+					cue.endTime = this._parseCueTime(time[1]);
+
+					text = [];
+
+					while (lines[++i] &amp;&amp; (line = S.trim(lines[i]))) {
+						text.push(line);
+					}
+					cue.text = text.join(&#x27;&lt;br/&gt;&#x27;);
+
+					this.cues.push(cue);
+				}
+			}
+		},
+
+		/**
+		 * 解析VTT文件中的时间至秒数
+		 */
+		_parseCueTime: function(timeText) {
+			var parts = timeText.split(&#x27;:&#x27;),
+				time = 0,
+				hours, minutes, other, seconds, ms;
+
+			// 如果包含小时
+			if (parts.length === 3) {
+				hours = parts[0];
+				minutes = parts[1];
+				other = parts[2];
+			
+			} else {
+				hours = 0;
+				minutes = parts[0];
+				other = parts[1];
+			}
+
+			other = other.split(/\s+/);
+			seconds = other.splice(0, 1)[0];
+			seconds = seconds.split(/\.|,/);
+			ms = parseFloat(seconds[1]);
+			seconds = seconds[0];
+
+			time += parseFloat(hours) * 3600;
+			time += parseFloat(minutes) * 60;
+			time += parseFloat(seconds);
+			if (ms) {
+				time += ms / 1000;
+			}
+
+			return time;
+		},
+
+		_onTimeUpdate: function() {
+			if (this.cues.length &lt;= 0) {
+				return;
+			}
+
+			var time = this.player.getCurrentTime();
+
+			if (this.prevChange === undefined || time &lt; this.prevChange || this.nextChange &lt;= time) {
+				var cues = this.cues,
+
+					//
+					newNextChange = this.player.getDuration(),
+					newPrevChange = 0,
+
+					reverse = false,
+					newCues = [],
+					firstActiveIndex, lastActiveIndex,
+					cue, i;
+
+				if (time &gt;= this.nextChange || this.nextChange === undefined) {
+					i = (this.firstActiveIndex !== undefined)? this.firstActiveIndex: 0;
+				} else {
+					reverse = true;
+					i = (this.lastActiveIndex !== undefined)? this.lastActiveIndex: cues.length - 1;
+				}
+
+				while (true) {
+					cue = cues[i];
+
+					if (cue.endTime &lt;= time) {
+						newPrevChange = Math.max(newPrevChange, cue.endTime);
+				
+						if (cue.active) {
+							cue.active = false;
+						}
+					
+					} else if (time &lt; cue.startTime) {
+						newNextChange = Math.min(newNextChange, cue.startTime);
+
+						if (cue.active) {
+							cue.active = false;
+						}
+
+						if (!reverse) {
+							break;
+						}
+					
+					} else {
+						if (reverse) {
+							newCues.splice(0, 0, cue);
+
+							if (lastActiveIndex === undefined) {
+								lastActiveIndex = i;
+							}
+							firstActiveIndex = i;
+						
+						} else {
+							newCues.push(cue);
+
+							if (firstActiveIndex === undefined) {
+								firstActiveIndex = i;
+							}
+							lastActiveIndex = i;
+						}
+
+						newNextChange = Math.min(newNextChange, cue.endTime);
+						newPrevChange = Math.max(newPrevChange, cue.startTime);
+
+						cue.active = true;
+					}
+
+					if (reverse) {
+						if (i === 0) {
+							break;
+						} else {
+							i--;
+						}
+					
+					} else {
+						if (i === cues.length - 1) {
+							break;
+						} else {
+							i++;
+						}
+					}
+
+				}
+
+				this.activeCues = newCues;
+				this.nextChange = newNextChange;
+				this.prevChange = newPrevChange;
+				this.firstActiveIndex = firstActiveIndex;
+				this.lastActiveIndex = lastActiveIndex;
+
+				this._updateDisplay();
+			}
+		},
+
+		_updateDisplay: function() {
+			var cues = this.activeCues,
+				html = &#x27;&#x27;,
+				i = 0,
+				j = cues.length;
+
+			for (;i &lt; j; i++) {
+				html += &#x27;&lt;span class=&quot;dev-vtt-cue&quot;&gt;&#x27; + cues[i].text + &#x27;&lt;/span&gt;&#x27;;	
+			}
+
+			this.node.html(html);
+		},
+
+		load: function(index) {
+			var currTrack = this._findTrackAt(index),
+				that = this;
+
+			// 清空cues数组
+			this.cues = [];
+			
+			// 如果找不到字幕轨道信息
+			if (!currTrack) {
+				this.hide();
+				return;
+			}
+
+			new IO({
+				type: &#x27;get&#x27;,
+				url: currTrack.src,
+				success: function(data) {
+					that._parseCues(data);
+					that.show();
+					that.player.fire(&#x27;loadedtexttrack&#x27;);
+				},
+				error: function() {
+					that.hide();
+				}
+			});
+
+		},
+
+		setTextTracklist: function(list) {
+			this.textTracklist = list;
+		},
+
+		show: function() {
+			this.node.show();
+		},
+
+		hide: function() {
+			this.node.hide();
+		}
+	});
+
+	return TextTrackControl;
+
+}, {
+	requires: [&#x27;base&#x27;,&#x27;node&#x27;, &#x27;ajax&#x27;]
+});
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

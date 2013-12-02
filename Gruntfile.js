@@ -57,14 +57,25 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
-						cwd:'1.0/',
+						cwd:'<%= pkg.version %>/',
                         src: ['**/*.less'],
-                        dest: '1.0/',
+                        dest: '<%= pkg.version %>/',
                         ext: '.css'
                     }
                 ]
             }
 			
+		},
+
+		yuidoc: {
+			compile: {
+				name: 'h5player',
+				description: 'h5player API',
+				options: {
+					paths: '<%= pkg.version %>/',
+					outdir: '<%= pkg.version %>/guide/'
+				}
+			}
 		}
     });
 
@@ -72,5 +83,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-kmc');
+	grunt.loadNpmTasks('grunt-contrib-yuidoc');
     return grunt.registerTask('default', ['kmc', 'uglify']);
 };

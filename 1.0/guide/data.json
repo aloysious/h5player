@@ -1,0 +1,1165 @@
+{
+    "project": {
+        "name": "h5player",
+        "description": "h5player API"
+    },
+    "files": {
+        "1.0/controls/controlspanel.js": {
+            "name": "1.0/controls/controlspanel.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/controls/fullscreen.js": {
+            "name": "1.0/controls/fullscreen.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/controls/mutetoggle.js": {
+            "name": "1.0/controls/mutetoggle.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/controls/playtoggle.js": {
+            "name": "1.0/controls/playtoggle.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/controls/progress.js": {
+            "name": "1.0/controls/progress.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/controls/timedisplay.js": {
+            "name": "1.0/controls/timedisplay.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/controls/volume.js": {
+            "name": "1.0/controls/volume.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/tracks/index.js": {
+            "name": "1.0/tracks/index.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/utils/tip.js": {
+            "name": "1.0/utils/tip.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "1.0/index.js": {
+            "name": "1.0/index.js",
+            "modules": {
+                "player": 1
+            },
+            "classes": {
+                "Player": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "player": {
+            "name": "player",
+            "submodules": {},
+            "classes": {
+                "Player": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "1.0/index.js",
+            "line": 11,
+            "description": "播放器模块",
+            "author": "aloysious.ld@taobao.com"
+        }
+    },
+    "classes": {
+        "Player": {
+            "name": "Player",
+            "shortname": "Player",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "player",
+            "namespace": "",
+            "file": "1.0/index.js",
+            "line": 11,
+            "is_constructor": 1
+        }
+    },
+    "classitems": [
+        {
+            "file": "1.0/controls/controlspanel.js",
+            "line": 1,
+            "fileoverview": "播放器控制面板模块\n              默认的基础功能有：播放按钮，时间进度，静音按钮，音量条，全屏按钮，进度条\n              可以通过配置filters来屏蔽基本功能，配置plugins来扩展控制面板功能",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/controls/fullscreen.js",
+            "line": 1,
+            "fileoverview": "全屏按钮模块",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/controls/mutetoggle.js",
+            "line": 1,
+            "fileoverview": "设置静音按钮模块",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/controls/playtoggle.js",
+            "line": 1,
+            "fileoverview": "播放按钮模块",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/controls/progress.js",
+            "line": 1,
+            "fileoverview": "进度条模块",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/controls/progress.js",
+            "line": 143,
+            "description": "TODO: 如何获取段数???",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/controls/timedisplay.js",
+            "line": 1,
+            "fileoverview": "时间进度显示模块",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/controls/volume.js",
+            "line": 1,
+            "fileoverview": "音量控制模块",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/tracks/index.js",
+            "line": 1,
+            "fileoverview": "字幕同步模块，字幕文件的读取，解析，同步显示",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/tracks/index.js",
+            "line": 55,
+            "description": "在列表中寻找相应的字幕轨道，\n如果index没有越界，直接取this.textTracklist[index],\n如果越界，或者没有传入index，取第一个设置有default的字幕轨道，\n如果没有default轨道，返回null",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/tracks/index.js",
+            "line": 81,
+            "description": "解析字幕文件中的轨道信息保存到this.cues中",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/tracks/index.js",
+            "line": 125,
+            "description": "解析VTT文件中的时间至秒数",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/utils/tip.js",
+            "line": 1,
+            "fileoverview": "提示控件",
+            "class": "Player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 28,
+            "description": "是否预加载",
+            "itemtype": "property",
+            "name": "preload",
+            "type": "Boolean",
+            "default": "false",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 39,
+            "description": "是否自动播放",
+            "itemtype": "property",
+            "name": "autoplay",
+            "type": "Boolean",
+            "default": "false",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 50,
+            "description": "是否循环播放",
+            "itemtype": "property",
+            "name": "loop",
+            "type": "Boolean",
+            "default": "false",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 61,
+            "description": "控制面板配置。\nnull为不使用控制面板，'default'为使用浏览器自带的控制面板，{}为使用自定义的控制面板。\n自定义控制面板的默认基础功能有：播放按钮，时间进度，静音按钮，音量条，全屏按钮，进度条。\n可配置filters，屏蔽默认的基础功能；\n可配置plugins，扩展控制面板功能，此时cfg作为扩展模块的第三个入参传入扩展模块实例，\n前两个参数约定为控制面板的Node对象实例，和player对象实例。\n例如：\ncontrols: {\n    fitlers: ['timedisplay', 'volume'],\n    plugins: [\n        {\n            fn: Collect,\n            cfg: {XXXX}\n        }\n    ]\n}",
+            "itemtype": "property",
+            "name": "controls",
+            "type": "Object",
+            "default": "null",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 87,
+            "description": "播放器宽度",
+            "itemtype": "property",
+            "name": "width",
+            "type": "String",
+            "default": "'auto'",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 98,
+            "description": "播放器高度",
+            "itemtype": "property",
+            "name": "height",
+            "type": "[String|Number]",
+            "default": "200",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 109,
+            "description": "播放列表数组\n数组的每个元素为一个媒体源的对象\n例如：\nplaylist: [\n    {\n         src: 'path/to/mp4',\n         type: 'video/mp4',\n         poster: 'path/to/poster',    // 媒体源的封面静态图片地址\n         story: 'path/to/story'       // 媒体源的进度缩略图\n    }\n]",
+            "itemtype": "property",
+            "name": "playlist",
+            "type": "Array",
+            "default": "[]",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 130,
+            "description": "初始化的播放源\n优先级低于playlist，即如果playlist中存在元素，则优先使用playlist中的元素作为初始化源\nsource为一个媒体源对象\n例如：\nsource: {\n    src: 'path/to/mp4',\n    type: 'video/mp4',\n    poster: 'path/to/poster',\n    story: 'path/to/story'\n}",
+            "itemtype": "property",
+            "name": "source",
+            "type": "Object",
+            "default": "null",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 150,
+            "description": "首次播放的播放列表序号",
+            "itemtype": "property",
+            "name": "playlistIndex",
+            "type": "Number",
+            "default": "0",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 161,
+            "description": "播放器的皮肤钩子类名",
+            "itemtype": "property",
+            "name": "defaultSkin",
+            "type": "String",
+            "default": "'dev-default-skin'",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 174,
+            "description": "开始寻找媒体数据时触发",
+            "itemtype": "event",
+            "name": "loadstart",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 180,
+            "description": "临时停止抓取媒体数据时触发",
+            "itemtype": "event",
+            "name": "suspend",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 186,
+            "description": "终止抓取媒体数据时触发",
+            "itemtype": "event",
+            "name": "abort",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 192,
+            "description": "抓取过程中发生错误时触发",
+            "itemtype": "event",
+            "name": "error",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 198,
+            "description": "当网络状态从其他状态切换至NETWORK_EMPTY时触发",
+            "itemtype": "event",
+            "name": "emptied",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 204,
+            "description": "尝试去抓取媒体数据，但数据无法如期而至时触发",
+            "itemtype": "event",
+            "name": "stalled",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 210,
+            "description": "当媒体时长、播放器尺寸、文本轨道数据准备好时触发",
+            "itemtype": "event",
+            "name": "loadedmetadata",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 216,
+            "description": "首次在当前播放位置可以渲染媒体数据时触发",
+            "itemtype": "event",
+            "name": "loadeddata",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 222,
+            "description": "当可以恢复媒体播放，但估计以当期速率无法持续播放至结束点时触发",
+            "itemtype": "event",
+            "name": "canplay",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 228,
+            "description": "当可以恢复媒体播放，但估计以当期速率可以持续播放至结束点时触发",
+            "itemtype": "event",
+            "name": "canplaythrough",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 234,
+            "description": "当播放重新启动时触发",
+            "itemtype": "event",
+            "name": "playing",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 240,
+            "description": "当播放由于没有下一帧而停止，并且可预知下一帧能够到来时触发",
+            "itemtype": "event",
+            "name": "waiting",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 246,
+            "description": "探寻开始时触发",
+            "itemtype": "event",
+            "name": "seeking",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 252,
+            "description": "探寻结束时触发",
+            "itemtype": "event",
+            "name": "seeked",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 258,
+            "description": "播放到达结束点时触发",
+            "itemtype": "event",
+            "name": "ended",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 264,
+            "description": "duration属性更新时触发",
+            "itemtype": "event",
+            "name": "durationchange",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 270,
+            "description": "当前播放时间更新时触发",
+            "itemtype": "event",
+            "name": "timeupdate",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 276,
+            "description": "在抓取媒体数据过程中连续触发",
+            "itemtype": "event",
+            "name": "progress",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 282,
+            "description": "媒体不再暂停时触发，发生在play()返回后，或autoplay引起播放时",
+            "itemtype": "event",
+            "name": "play",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 288,
+            "description": "媒体暂停时触发，发生在pause()返回后",
+            "itemtype": "event",
+            "name": "pause",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 294,
+            "description": "播放速率更新后触发",
+            "itemtype": "event",
+            "name": "ratechange",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 300,
+            "description": "音量更新或静音时触发",
+            "itemtype": "event",
+            "name": "volumechange",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 306,
+            "description": "全屏或取消全屏时触发",
+            "itemtype": "event",
+            "name": "fullscreenchange",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 432,
+            "description": "创建video标签，如果初始化的页面中已存在video标签，则js配置信息无效",
+            "itemtype": "method",
+            "name": "_createVideoTag",
+            "access": "private",
+            "tagname": "",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 467,
+            "description": "创建用户自定义的控制面板",
+            "itemtype": "method",
+            "name": "_createControlsPanel",
+            "access": "private",
+            "tagname": "",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 480,
+            "description": "检测fullscreen的支持情况，即时函数",
+            "itemtype": "method",
+            "name": "_supportFullscreen",
+            "access": "private",
+            "tagname": "",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 524,
+            "description": "TODO\n不支持fullscreenAPI时的全屏模拟",
+            "itemtype": "method",
+            "name": "_enterFullWindow",
+            "access": "private",
+            "tagname": "",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 533,
+            "description": "TODO\n不支持fullscreenAPI时的取消全屏模拟",
+            "itemtype": "method",
+            "name": "_exitFullWindow",
+            "access": "private",
+            "tagname": "",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 549,
+            "description": "TODO\n通过id读取视频",
+            "itemtype": "method",
+            "name": "loadById",
+            "params": [
+                {
+                    "name": "vid",
+                    "description": "video ID",
+                    "type": "String"
+                },
+                {
+                    "name": "startTime",
+                    "description": "开始的时刻，以秒为单位",
+                    "type": "Number"
+                },
+                {
+                    "name": "quality",
+                    "description": "视频质量，暂时未实现",
+                    "type": "String"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 560,
+            "description": "通过url读取视频",
+            "itemtype": "method",
+            "name": "loadByUrl",
+            "params": [
+                {
+                    "name": "url",
+                    "description": "视频源的地址",
+                    "type": "String"
+                },
+                {
+                    "name": "startTime",
+                    "description": "开始的时刻，以秒为单位",
+                    "type": "Number"
+                },
+                {
+                    "name": "quality",
+                    "description": "视频质量，暂时未实现",
+                    "type": "String"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 573,
+            "description": "读取视频列表",
+            "itemtype": "method",
+            "name": "loadPlaylist",
+            "params": [
+                {
+                    "name": "list",
+                    "description": "视频列表数组，数组元素的结构参考playlist",
+                    "type": "Array"
+                },
+                {
+                    "name": "firstIndex",
+                    "description": "第一个播放的视频序号",
+                    "type": "Number"
+                },
+                {
+                    "name": "startTime",
+                    "description": "第一个视频的开始时刻，以秒为单位",
+                    "type": "Number"
+                },
+                {
+                    "name": "quality",
+                    "description": "视频质量，暂时未实现",
+                    "type": "String"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 588,
+            "description": "读取特定序号的字幕",
+            "itemtype": "method",
+            "name": "loadTextTrackAt",
+            "params": [
+                {
+                    "name": "index",
+                    "description": "当前字幕列表中的特定序号",
+                    "type": "Number"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 598,
+            "description": "保存字幕列表，并加载默认字幕",
+            "itemtype": "method",
+            "name": "loadTextTracklist",
+            "params": [
+                {
+                    "name": "list",
+                    "description": "字幕列表",
+                    "type": "Array"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 615,
+            "description": "播放视频",
+            "itemtype": "method",
+            "name": "play",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 624,
+            "description": "暂停视频",
+            "itemtype": "method",
+            "name": "pause",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 633,
+            "description": "视频是否暂停",
+            "itemtype": "method",
+            "name": "paused",
+            "return": {
+                "description": "当前视频是否处于暂停状态",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 643,
+            "description": "TODO\n终止视频",
+            "itemtype": "method",
+            "name": "stop",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 651,
+            "description": "推进视频到特定的时刻，开启搜寻",
+            "itemtype": "method",
+            "name": "seekTo",
+            "params": [
+                {
+                    "name": "time",
+                    "description": "开始搜寻的时刻，单位为秒",
+                    "type": "Number"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 661,
+            "description": "播放列表中的下一个视频",
+            "itemtype": "method",
+            "name": "nextVideo",
+            "return": {
+                "description": "是否存在下一个可以播放的视频源",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 675,
+            "description": "播放列表中的前一个视频",
+            "itemtype": "method",
+            "name": "prevVideo",
+            "return": {
+                "description": "是否存在前一个可以播放的视频源",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 689,
+            "description": "播放列表中特定的一个视频",
+            "itemtype": "method",
+            "name": "playVideoAt",
+            "params": [
+                {
+                    "name": "index",
+                    "description": "视频序号",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "是否存在视频源",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 708,
+            "description": "设置为静音",
+            "itemtype": "method",
+            "name": "mute",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 717,
+            "description": "取消静音",
+            "itemtype": "method",
+            "name": "unmute",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 726,
+            "description": "当前是否为静音",
+            "itemtype": "method",
+            "name": "isMuted",
+            "return": {
+                "description": "是否为静音",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 736,
+            "description": "设置音量",
+            "itemtype": "method",
+            "name": "setVolume",
+            "params": [
+                {
+                    "name": "vol",
+                    "description": "音量值，可选值为0.0至1.0",
+                    "type": "Number"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 746,
+            "description": "获取音量",
+            "itemtype": "method",
+            "name": "getVolume",
+            "return": {
+                "description": "音量值，0.0至1.0",
+                "type": "Number"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 756,
+            "description": "设置播放速率",
+            "itemtype": "method",
+            "name": "setPlaybackRate",
+            "params": [
+                {
+                    "name": "rate",
+                    "description": "播放速率",
+                    "type": "Number"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 766,
+            "description": "获取播放速率",
+            "itemtype": "method",
+            "name": "getPlaybackRate",
+            "return": {
+                "description": "播放速率",
+                "type": "Number"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 776,
+            "description": "设置播放器静态占位图片",
+            "itemtype": "method",
+            "name": "setPoster",
+            "params": [
+                {
+                    "name": "posterUrl",
+                    "description": "图片地址",
+                    "type": "String"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 786,
+            "description": "设置全屏",
+            "itemtype": "method",
+            "name": "requestFullScreen",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 819,
+            "description": "取消全屏",
+            "itemtype": "method",
+            "name": "cancelFullScreen",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 838,
+            "description": "是否处于全屏",
+            "itemtype": "method",
+            "name": "getIsFullScreen",
+            "return": {
+                "description": "是否为全屏",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 848,
+            "description": "是否自定义控制面板",
+            "itemtype": "method",
+            "name": "hasCustomedControls",
+            "return": {
+                "description": "是否为自定义控制面板",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 858,
+            "description": "控制面板是否显示",
+            "itemtype": "method",
+            "name": "isControlsShown",
+            "return": {
+                "description": "是否显示",
+                "type": "Boolean"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 868,
+            "description": "显示控制面板",
+            "itemtype": "method",
+            "name": "showControls",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 877,
+            "description": "隐藏控制面板",
+            "itemtype": "method",
+            "name": "hideControls",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 886,
+            "description": "激活控制面板，先显示控制面板，再启动自动隐藏的倒计时\n3秒后自动隐藏面板",
+            "itemtype": "method",
+            "name": "activeControls",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 906,
+            "description": "使控制面板不会自动隐藏",
+            "itemtype": "method",
+            "name": "deactiveControls",
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 920,
+            "description": "获取当前播放时间",
+            "itemtype": "method",
+            "name": "getCurrentTime",
+            "return": {
+                "description": "当前播放时间，单位为秒",
+                "type": "Number"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 930,
+            "description": "获取总播放时间",
+            "itemtype": "method",
+            "name": "getDuration",
+            "return": {
+                "description": "总播放时间，单位为秒",
+                "type": "Number"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 940,
+            "description": "获取已经缓存的时间区间",
+            "itemtype": "method",
+            "name": "getBuffered",
+            "return": {
+                "description": "时间区间数组timeRanges",
+                "type": "Array"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 950,
+            "description": "TODO\n设置播放质量",
+            "itemtype": "method",
+            "name": "setPlaybackQuality",
+            "params": [
+                {
+                    "name": "quality",
+                    "description": "视频播放质量字符串",
+                    "type": "String"
+                }
+            ],
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 959,
+            "description": "TODO\n获取播放质量",
+            "itemtype": "method",
+            "name": "getPlaybackQuality",
+            "return": {
+                "description": "视频播放质量字符串",
+                "type": "String"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 968,
+            "description": "获取播放列表",
+            "itemtype": "method",
+            "name": "getPlaylist",
+            "return": {
+                "description": "播放列表数组，元素结构参考playlist",
+                "type": "Array"
+            },
+            "class": "Player",
+            "module": "player"
+        },
+        {
+            "file": "1.0/index.js",
+            "line": 978,
+            "description": "获取当前播放的视频在列表中的序号",
+            "itemtype": "method",
+            "name": "getPlaylistIndex",
+            "return": {
+                "description": "当前播放序号",
+                "type": "Number"
+            },
+            "class": "Player",
+            "module": "player"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/controls/controlspanel.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/controls/fullscreen.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/controls/mutetoggle.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/controls/playtoggle.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/controls/progress.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/controls/timedisplay.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/controls/volume.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/tracks/index.js:1"
+        },
+        {
+            "message": "unknown tag: fileoverview",
+            "line": " 1.0/utils/tip.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/controls/controlspanel.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/controls/fullscreen.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/controls/mutetoggle.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/controls/playtoggle.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/controls/progress.js:1"
+        },
+        {
+            "message": "Missing item type\nTODO: 如何获取段数???",
+            "line": " 1.0/controls/progress.js:143"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/controls/timedisplay.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/controls/volume.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/tracks/index.js:1"
+        },
+        {
+            "message": "Missing item type\n在列表中寻找相应的字幕轨道，\n如果index没有越界，直接取this.textTracklist[index],\n如果越界，或者没有传入index，取第一个设置有default的字幕轨道，\n如果没有default轨道，返回null",
+            "line": " 1.0/tracks/index.js:55"
+        },
+        {
+            "message": "Missing item type\n解析字幕文件中的轨道信息保存到this.cues中",
+            "line": " 1.0/tracks/index.js:81"
+        },
+        {
+            "message": "Missing item type\n解析VTT文件中的时间至秒数",
+            "line": " 1.0/tracks/index.js:125"
+        },
+        {
+            "message": "Missing item type",
+            "line": " 1.0/utils/tip.js:1"
+        }
+    ]
+}

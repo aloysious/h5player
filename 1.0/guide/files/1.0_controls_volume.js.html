@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>1.0/controls/volume.js - h5player</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="h5player"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/Player.html">Player</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/player.html">player</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: 1.0/controls/volume.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+   @fileoverview 音量控制模块
+ */
+KISSY.add(function (S, Base, EVENT, DOM, NODE) {
+
+	&quot;use strict&quot;;
+
+	function Volume(con, player, cfg) {
+		if (this instanceof Volume) {
+
+			this.con = con;
+			this.player = player;
+
+			Volume.superclass.constructor.call(this, cfg);
+			this.init();
+
+		} else {
+			return new Volume(con, player, cfg);
+		}
+	}
+
+	Volume.ATTRS = {
+		className: {
+			value: &#x27;dev-control-volume&#x27;
+		},
+
+		innerHTML: {
+			value: &#x27;&lt;div class=&quot;dev-volume-wrap&quot;&gt;&#x27; + 
+						&#x27;&lt;div class=&quot;dev-volume-current&quot;&gt;&lt;/div&gt;&#x27; + 
+				   &#x27;&lt;/div&gt;&#x27;
+		}
+	}
+
+	S.extend(Volume, S.Base, {
+
+		init: function() {
+			// your code here
+			this.renderUI();
+			this.bindUI();
+		},
+		
+		destory: function(){
+			
+		},
+
+		renderUI: function() {
+			var progressDom = DOM.create(&#x27;&lt;div class=&quot;&#x27; + this.get(&#x27;className&#x27;) + &#x27;&quot;&gt;&#x27; + this.get(&#x27;innerHTML&#x27;) + &#x27;&lt;/div&gt;&#x27;);
+			this.con.append(progressDom);
+			this.node = this.con.one(&#x27;.&#x27; + this.get(&#x27;className&#x27;));
+			this.currVolNode = this.node.one(&#x27;.dev-volume-current&#x27;);
+		},
+
+		bindUI: function() {
+			EVENT.on(this.node, &#x27;mousedown&#x27;, this._onMouseDown, this);
+			EVENT.on(this.node, &#x27;touchstart&#x27;, this._onMouseDown, this);
+			
+			// 按钮状态的改变可能由模块外部的事件触发
+			// 因此，这部分的逻辑处理应该放在player的事件回调中
+			this.player.on(&#x27;volumechange&#x27;, this._onVolumeChange, this);
+		},
+
+		_onMouseDown: function(e) {
+			e.halt();
+			EVENT.on(this.node, &#x27;mousemove&#x27;, this._onMouseMove, this);
+			EVENT.on(this.node, &#x27;mouseup&#x27;, this._onMouseUp, this);
+			EVENT.on(this.node, &#x27;touchmove&#x27;, this._onMouseMove, this);
+			EVENT.on(this.node, &#x27;touchend&#x27;, this._onMouseUp, this);
+
+			this._onMouseMove(e);
+		},
+
+		_onMouseUp: function(e) {
+			e.halt();
+			EVENT.detach(this.node, &#x27;mousemove&#x27;, this._onMouseMove, this);
+			EVENT.detach(this.node, &#x27;mouseup&#x27;, this._onMouseUp, this);
+			EVENT.detach(this.node, &#x27;touchmove&#x27;, this._onMouseMove, this);
+			EVENT.detach(this.node, &#x27;touchend&#x27;, this._onMouseUp, this);
+			
+			// 结束拖动时，允许控制面板隐藏
+			this.player.activeControls();
+		},
+
+		_onMouseMove: function(e) {
+			e.halt();
+
+			var pageX = e.touches? e.touches[0].pageX: e.pageX,
+				distance = pageX - this.node.offset().left,
+				width = this.node.width(),
+				vol = distance / width;
+			
+			// 拖动时，控制面板禁止隐藏
+			this.player.deactiveControls();
+
+			vol = vol &lt; 0? 0: (vol &gt; 1? 1: vol);
+
+			this.player.setVolume(vol);
+			if (this.player.isMuted()) {
+				this.player.unmute();
+			}
+
+		},
+
+		_onVolumeChange: function(e) {
+			var width;
+
+			if (this.player.isMuted()) {
+				width = 0;
+			} else {
+				width = (this.player.getVolume() * 100) + &#x27;%&#x27;;
+			}
+
+			this.currVolNode.css({
+				width: width
+			});
+		}
+
+	});
+
+	return Volume;
+
+}, {
+	requires: [&#x27;base&#x27;, &#x27;event&#x27;, &#x27;dom&#x27;, &#x27;node&#x27;]
+});
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
