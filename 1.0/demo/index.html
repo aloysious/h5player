@@ -30,7 +30,7 @@
         });
     }
 
-    S.use('gallery/h5player/1.0/index, gallery/h5player/1.0/demo/plugins/caption', function (S, H5player, Caption) {
+    S.use('gallery/h5player/1.0/index,gallery/h5player/1.0/demo/plugins/caption', function (S, H5player, Caption) {
 		var h5player = new H5player('#J_player', {
 			playlist: [
 				{
@@ -42,8 +42,7 @@
 						{
 							src: '../tracks/captions_cn.vtt',
 							srclang: '',
-							label: '中文',
-							default: true
+							label: '中文'
 						},
 						{
 							src: '../tracks/captions.vtt',
@@ -68,11 +67,12 @@
 					}
 				]
 			},
-			autoplay: true,
-			width: 640,
-			height: 380
+			autoplay: false
+			//width: 640,
+			//height: 380
 		});
     })
 </script>
+<script src="http://10.32.92.29:8081/target/target-script-min.js#anonymous"></script>
 </body>
 </html>

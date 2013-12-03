@@ -66,7 +66,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		_onFullscreenChange: function() {
-			console.log(this.player.getIsFullScreen());
 			if (!this.player.getIsFullScreen()) {
 				this.node.removeClass('dev-non-fullscreen');
 				this.node.addClass('dev-fullscreen');

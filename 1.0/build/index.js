@@ -1,10 +1,16 @@
+/*
+combined files : 
+
+gallery/h5player/1.0/index
+
+*/
 /**
  * 播放器模块
  *
  * @module player
  * @author aloysious.ld@taobao.com
  */
-KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) {
+KISSY.add('gallery/h5player/1.0/index',function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) {
 
 	"use strict";
 
@@ -541,36 +547,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @method _enterFullWindow
 		 * @private
 		 */
-		_enterFullWindow: function() {
-			console.log('into fullwindow');
-			this.isFullWindow = true;
-
-			this.docOrigOverflow = document.documentElement.style.overflow;
-
-			EVENT.on(document, 'keydown', this._onFullWindowKeyDown, this);
-
-			document.documentElement.style.overflow = 'hidden';
-
-			NODE.one('body').addClass('dev-full-window');
-			this.fire('enterfullwindow');
-		},
-
-		/**
-		 * 进入全屏后的keydown事件监听
-		 *
-		 * @method _onFullWindowKeyDown
-		 * @param e {Object} 事件对象
-		 * @private
-		 */
-		_onFullWindowKeyDown: function(e) {
-			if (e.keyCode === 27) {
-				if (this.isFullScreen === true) {
-					this.cancelFullScreen();
-				} else {
-					this._exitFullWindow();
-				}
-			}
-		},
+		_enterFullWindow: function() {},
 		
 		/**
 		 * TODO
@@ -579,15 +556,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @method _exitFullWindow
 		 * @private
 		 */
-		_exitFullWindow: function() {
-			this.isFullWindow = false;
-			EVENT.detach(document, this._onFullWindowKeyDown);
-
-			document.documentElement.style.overflow = this.docOrigOverflow;
-
-			NODE.one('body').removeClass('dev-full-window');
-			this.fire('exitfullwindow');
-		},
+		_exitFullWindow: function() {},
 	
 		////////////////////////////////////////////////////////////////
 		//                                                            //
@@ -631,7 +600,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		loadPlaylist: function(list, firstIndex, startTime, quality) {
 			this.playlist = list;
-			this.playVideoAt(firstIndex);
+			this.playlistIndex = firstIndex;
+			this.playVideoAt(this.playlistIndex);
 		},
 
 		/**
@@ -641,11 +611,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @param index {Number} 当前字幕列表中的特定序号
 		 */
 		loadTextTrackAt: function(index) {
-			if (index === undefined || index === null) {
-				index = 0;
-			}
-			this.textTracklistIndex = index;
-			this.textTrackControl && this.textTrackControl.load(index);
+			this.textTrackControl.load(index);
 		},
 
 		/**
@@ -653,11 +619,15 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * 
 		 * @method loadTextTracklist
 		 * @param list {Array} 字幕列表
-		 * @param firstIndex {Number} 开始的字幕序号
 		 */
-		loadTextTracklist: function(list, firstIndex) {
+		loadTextTracklist: function(list) {
 			this.textTracklist = list;
-			this.loadTextTrackAt(firstIndex);
+			if (!this.textTrackControl) {
+				this.textTrackControl = new TextTrackControl(this.id, this, {textTracklist:this.textTracklist});
+			} else {
+				this.textTrackControl.setTextTracklist(list);
+			}
+			this.textTrackControl.load();
 		},
 		
 		// ******************** 视频控制和配置相关 *********************
@@ -743,11 +713,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @return {Boolean} 是否存在视频源
 		 */
 		playVideoAt: function(index) {
-			if (index === undefined || index === null) {
-				index = 0;
-			}
-			this.playlistIndex = index;
-
 			var source = this.playlist[index];
 
 			if (!source) {
@@ -1097,7 +1062,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		'event', 
 		'dom', 
 		'node', 
-		'gallery/h5player/1.0/controls/controlspanel', 
-		'gallery/h5player/1.0/tracks/index', 
+		'gallery/gallery/h5player/1.0/controls/controlspanel', 
+		'gallery/gallery/h5player/1.0/tracks/index', 
 		'./index.css']
 });
+

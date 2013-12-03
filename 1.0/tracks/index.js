@@ -53,32 +53,6 @@ KISSY.add(function (S, Base, NODE, IO) {
 		},
 
 		/**
-		 * 修正读取的序号
-		 * 如果index没有越界，直接返回index,
-		 * 如果越界，或者没有传入index，取第一个设置有default的字幕轨道的序号，
-		 * 如果没有default轨道，返回-1
-		 */
-		_fixTrackIndexAt: function(index) {
-			var rtIndex = -1;
-
-			if (index === undefined || index === null || 
-					index < 0 || index > (this.textTracklist.length - 1)) {
-				S.each(this.textTracklist, function(track, i) {
-					if (track.default === true) {
-						rtIndex = i;
-						return false;
-					}
-				});
-
-			
-			} else {
-				rtIndex = index;
-			}
-
-			return rtIndex;
-		},
-
-		/**
 		 * 解析字幕文件中的轨道信息保存到this.cues中
 		 */
 		_parseCues: function(vttContent) {
@@ -270,32 +244,29 @@ KISSY.add(function (S, Base, NODE, IO) {
 		},
 
 		load: function(index) {
-			var currIndex = this._fixTrackIndexAt(index),
-				that = this;
+			var that = this,
+				track = this.textTracklist[index];				
 
 			// 清空cues数组
 			this.cues = [];
 			
-			// 如果找不到字幕轨道序号
-			if (currIndex === -1) {
+			// 如果找不到字幕轨道
+			if (!track) {
 				this.hide();
-				this.player.setTracklistIndex(-1);
 				this.player.fire('errortexttrack');
 				return;
 			}
 
 			new IO({
 				type: 'get',
-				url: that.textTracklist[currIndex].src,
+				url: track.src,
 				success: function(data) {
 					that._parseCues(data);
 					that.show();
-					that.player.setTracklistIndex(currIndex);
 					that.player.fire('loadedtexttrack');
 				},
 				error: function() {
 					that.hide();
-					that.player.setTracklistIndex(-1);
 					that.player.fire('errortexttrack');
 				}
 			});

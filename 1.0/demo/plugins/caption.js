@@ -49,13 +49,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		bindUI: function() {
 			var that = this;
 
-			this.player.on('loadedmetadata', function() {
-				// 保证在player.textTracklist更新后执行
-				//setTimeout(function() {
-				//	that._updateSelectList();
-				//}, 0);
-			});
-
 			EVENT.delegate(this.node, 'change', '.dev-caption-select', function() {
 				var selectNode = that.node.one('.dev-caption-select'),
 					selectedIndex = parseInt(selectNode.val());

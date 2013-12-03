@@ -19,7 +19,9 @@
 	color: #fff;
 	background-color: rgb(0,0,0,0.8);
 	display: none;
+	z-index: 9999;
 }
+
 
 .dev-default-skin {
 	position: relative;
@@ -158,4 +160,26 @@
 		cursor: pointer;
 		line-height: 19px;
 	}
+}
+
+/* fullscreen */
+
+body.dev-full-window {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	overflow-y: auto;
+}
+
+.dev-fullscreen {
+	position: fixed;
+	overflow: hidden;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: 100% !important;
+	height: 100% !important;
+	_position: absolute;
 }
