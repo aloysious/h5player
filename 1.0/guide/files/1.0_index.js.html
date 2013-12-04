@@ -403,7 +403,13 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * 读取当前选中的字幕完成时触发
 		 * @event loadedtexttrack
 		 */
-		LOADED_TEXT_TRACK: &#x27;loadedtexttrack&#x27;
+		LOADED_TEXT_TRACK: &#x27;loadedtexttrack&#x27;,
+		
+		/**
+		 * 读取当前选中的字幕错误时触发
+		 * @event loadedtexttrack
+		 */
+		ERROR_TEXT_TRACK: &#x27;errortexttrack&#x27;
 	
 	};
 
@@ -413,7 +419,8 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 			this.controls = this.get(&#x27;controls&#x27;);
 			this.playlist = this.get(&#x27;playlist&#x27;);
 			this.playlistIndex = this.get(&#x27;playlistIndex&#x27;);
-			this.tracklist = this.get(&#x27;tracklist&#x27;);
+			this.textTracklist = [];
+			this.textTracklistIndex = -1;
 			this.render();
 		},
 
@@ -478,51 +485,13 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 					that.nextVideo();
 				}
 			
-				// 读取字幕
+			});
+
+			// 在metadata准备好时开始读取字幕
+			this.on(EVENTS.LOADED_METADATA, function() {
 				var currSrc = this.playlist[this.playlistIndex];
 				that.loadTextTracklist(S.isArray(currSrc.textTracks)? currSrc.textTracks: []); 
 			});
-
-			// 主要针对移动设备，
-			// 第一次触碰屏幕时激活控制面板，
-			// 激活后再触碰屏幕才能暂停或继续播放
-			/*
-			EVENT.on(this.con, &#x27;click&#x27;, function() {
-				if (!that.hasCustomedControls()) {
-					return;
-				}	
-
-				if (that.isControlsShown()) {
-					if (that.paused()) {
-						that.play();
-					} else {
-						that.pause();
-					}
-				
-				} else {
-					that.activeControls();
-				}
-			});
-			*/
-
-			EVENT.on(this.con, &#x27;click&#x27;, function() {
-				if (!that.hasCustomedControls()) {
-					return;
-				}	
-
-				if (that.isControlsShown()) {
-					that.hideControls();
-				} else {
-					that.activeControls();
-				}
-			});
-
-			EVENT.on(this.con, &#x27;touchmove&#x27;, function() {
-				if (that.hasCustomedControls()) {
-					that.activeControls();
-				}
-			});
-
 		},
 
 		/**
@@ -551,9 +520,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 
 				this.con.append(videoDom);
 				videoNode = this.con.one(&#x27;video&#x27;);
-
-				// 读取字幕
-				this.loadTextTracklist(S.isArray(source.textTracks)? source.textTracks: []); 
 			}
 
 			// 获取video标签的原生media element对象
@@ -568,9 +534,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		_createControlsPanel: function() {
 			this.controlsPanel = new ControlsPanel(this.id, this, this.controls);
-			
-			// 初始状态下需激活控制面板
-			this.activeControls();
 		},
 
 		/**
@@ -624,7 +587,36 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @method _enterFullWindow
 		 * @private
 		 */
-		_enterFullWindow: function() {},
+		_enterFullWindow: function() {
+			console.log(&#x27;into fullwindow&#x27;);
+			this.isFullWindow = true;
+
+			this.docOrigOverflow = document.documentElement.style.overflow;
+
+			EVENT.on(document, &#x27;keydown&#x27;, this._onFullWindowKeyDown, this);
+
+			document.documentElement.style.overflow = &#x27;hidden&#x27;;
+
+			NODE.one(&#x27;body&#x27;).addClass(&#x27;dev-full-window&#x27;);
+			this.fire(&#x27;enterfullwindow&#x27;);
+		},
+
+		/**
+		 * 进入全屏后的keydown事件监听
+		 *
+		 * @method _onFullWindowKeyDown
+		 * @param e {Object} 事件对象
+		 * @private
+		 */
+		_onFullWindowKeyDown: function(e) {
+			if (e.keyCode === 27) {
+				if (this.isFullScreen === true) {
+					this.cancelFullScreen();
+				} else {
+					this._exitFullWindow();
+				}
+			}
+		},
 		
 		/**
 		 * TODO
@@ -633,7 +625,15 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @method _exitFullWindow
 		 * @private
 		 */
-		_exitFullWindow: function() {},
+		_exitFullWindow: function() {
+			this.isFullWindow = false;
+			EVENT.detach(document, this._onFullWindowKeyDown);
+
+			document.documentElement.style.overflow = this.docOrigOverflow;
+
+			NODE.one(&#x27;body&#x27;).removeClass(&#x27;dev-full-window&#x27;);
+			this.fire(&#x27;exitfullwindow&#x27;);
+		},
 	
 		////////////////////////////////////////////////////////////////
 		//                                                            //
@@ -677,8 +677,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		loadPlaylist: function(list, firstIndex, startTime, quality) {
 			this.playlist = list;
-			this.playlistIndex = firstIndex;
-			this.playVideoAt(this.playlistIndex);
+			this.playVideoAt(firstIndex);
 		},
 
 		/**
@@ -688,7 +687,11 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @param index {Number} 当前字幕列表中的特定序号
 		 */
 		loadTextTrackAt: function(index) {
-			this.textTrackControl.load(index);
+			if (index === undefined || index === null) {
+				index = 0;
+			}
+			this.textTracklistIndex = index;
+			this.textTrackControl &amp;&amp; this.textTrackControl.load(index);
 		},
 
 		/**
@@ -696,15 +699,19 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * 
 		 * @method loadTextTracklist
 		 * @param list {Array} 字幕列表
+		 * @param firstIndex {Number} 开始的字幕序号
 		 */
-		loadTextTracklist: function(list) {
+		loadTextTracklist: function(list, firstIndex) {
 			this.textTracklist = list;
+
+			// 如果没有字幕同步模块，创建之
 			if (!this.textTrackControl) {
 				this.textTrackControl = new TextTrackControl(this.id, this, {textTracklist:this.textTracklist});
 			} else {
-				this.textTrackControl.setTextTracklist(list);
+				this.textTrackControl.setTextTracklist(this.textTracklist);				
 			}
-			this.textTrackControl.load();
+
+			this.loadTextTrackAt(firstIndex);
 		},
 		
 		// ******************** 视频控制和配置相关 *********************
@@ -790,6 +797,11 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 * @return {Boolean} 是否存在视频源
 		 */
 		playVideoAt: function(index) {
+			if (index === undefined || index === null) {
+				index = 0;
+			}
+			this.playlistIndex = index;
+
 			var source = this.playlist[index];
 
 			if (!source) {
@@ -878,6 +890,16 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		setPoster: function(posterUrl) {
 			this.videoTag.poster = posterUrl;
 		},
+		
+		/**
+		 * 获取播放器静态占位图片
+		 *
+		 * @method getPoster
+		 * @return {String} 图片地址
+		 */
+		getPoster: function() {
+			return this.videoTag.poster;
+		},
 
 		/**
 		 * 设置全屏
@@ -942,73 +964,21 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		},
 
 		/**
-		 * 是否自定义控制面板
+		 * 隐藏字幕同步
 		 *
-		 * @method hasCustomedControls
-		 * @return {Boolean} 是否为自定义控制面板
+		 * @method hideTextTrackControl
 		 */
-		hasCustomedControls: function() {
-			return !!this.controlsPanel;
+		hideTextTrackControl: function() {
+			this.textTrackControl.hide();
 		},
 
 		/**
-		 * 控制面板是否显示
+		 * 显示字幕同步
 		 *
-		 * @method isControlsShown
-		 * @return {Boolean} 是否显示
+		 * @method showTextTrackControl
 		 */
-		isControlsShown: function() {
-			return this.controlsPanel &amp;&amp; this.controlsPanel.isShown();
-		},
-
-		/**
-		 * 显示控制面板
-		 *
-		 * @method showControls
-		 */
-		showControls: function() {
-			this.controlsPanel &amp;&amp; this.controlsPanel.show();
-		},
-
-		/**
-		 * 隐藏控制面板
-		 *
-		 * @method hideControls
-		 */
-		hideControls: function() {
-			this.controlsPanel &amp;&amp; this.controlsPanel.hide();
-		},
-
-		/**
-		 * 激活控制面板，先显示控制面板，再启动自动隐藏的倒计时
-		 * 3秒后自动隐藏面板
-		 *
-		 * @method activeControls
-		 */
-		activeControls: function() {
-			var that = this;
-
-			// 激活时先重置计时器
-			if (this.controlsTimeout) {
-				clearTimeout(this.controlsTimeout);
-			}
-
-			this.showControls();
-			this.controlsTimeout = setTimeout(function() {
-				that.hideControls();
-			}, 3000);
-		},
-
-		/**
-		 * 使控制面板不会自动隐藏
-		 *
-		 * @method deactiveControls
-		 */
-		deactiveControls: function() {
-			// 激活时先重置计时器
-			if (this.controlsTimeout) {
-				clearTimeout(this.controlsTimeout);
-			}
+		showTextTrackControl: function() {
+			this.textTrackControl.show();
 		},
 
 		// ****************** 播放状态相关 **********************
@@ -1079,6 +1049,36 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		getPlaylistIndex: function() {
 			return this.playlistIndex;
+		},
+
+		/**
+		 * 获取当前的字幕列表
+		 *
+		 * @method getTracklist
+		 * @return {Array} 字幕列表数组
+		 */
+		getTracklist: function() {
+			return this.textTracklist;
+		},
+
+		/**
+		 * 获取当前字幕在列表中的序号
+		 *
+		 * @method getTracklistIndex
+		 * @return {Number} 当前字幕序号
+		 */
+		getTracklistIndex: function() {
+			return this.textTracklistIndex;
+		},
+		
+		/**
+		 * 设置当前字幕在列表中的序号
+		 *
+		 * @method setTracklistIndex
+		 * @param index {Number} 当前字幕序号
+		 */
+		setTracklistIndex: function(index) {
+			return this.textTracklistIndex = index;
 		}
 
 	});
@@ -1091,7 +1091,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		&#x27;event&#x27;, 
 		&#x27;dom&#x27;, 
 		&#x27;node&#x27;, 
-		&#x27;gallery/h5player/1.0/controls/controlspanel&#x27;, 
+		&#x27;gallery/h5player/1.0/controls/index&#x27;, 
 		&#x27;gallery/h5player/1.0/tracks/index&#x27;, 
 		&#x27;./index.css&#x27;]
 });

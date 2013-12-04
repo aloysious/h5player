@@ -178,8 +178,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 			this.player.seekTo(sec);
 			this.player.play();
 
-			// 结束拖动时，允许控制面板隐藏
-			this.player.activeControls();
+			this.fire(&#x27;dragend&#x27;);
 
 			Tip.hide();
 		},
@@ -193,8 +192,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 				sec = (this.player.getDuration()) ? distance / width * this.player.getDuration(): 0,
 				currSrc = this.player.getPlaylist()[this.player.getPlaylistIndex()];
 			
-			// 拖动时，控制面板禁止隐藏
-			this.player.deactiveControls();
+			this.fire(&#x27;dragmove&#x27;);
 
 			this._updateProgressBar(this.playedNode, sec);
 			
@@ -215,11 +213,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 			// 此时buffer可能还没有准备好
 			if (this.player.getDuration()) {
 				this._updateProgressBar(this.loadedNode, this.player.getBuffered().end(this.player.getBuffered().length - 1));
-
-				console.log(this.player.getBuffered().length);
-				for (var i=0,j=this.player.getBuffered().length; i&lt;j; i++) {
-					console.log(&#x27;start:&#x27; + this.player.getBuffered().start(i) + &#x27;, end:&#x27; + this.player.getBuffered().end(i));
-				}
 			}
 		},
 

@@ -156,16 +156,15 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		_onFullscreenChange: function() {
-			console.log(this.player.getIsFullScreen());
-			if (!this.player.getIsFullScreen()) {
-				this.node.removeClass(&#x27;dev-non-fullscreen&#x27;);
-				this.node.addClass(&#x27;dev-fullscreen&#x27;);
-				this.node.one(&#x27;.dev-control-content&#x27;).html(&#x27;&lt;div class=&quot;iconfont&quot; data-status=&quot;fullscreen&quot;&gt;&amp;#13800&lt;/div&gt;&#x27;);
+			if (this.player.getIsFullScreen()) {
+				this.node.removeClass(&#x27;dev-non-fs&#x27;);
+				this.node.addClass(&#x27;dev-fs&#x27;);
+				this.node.one(&#x27;.dev-control-content&#x27;).html(&#x27;&lt;div class=&quot;iconfont&quot; data-status=&quot;fullscreen&quot;&gt;&amp;#13796&lt;/div&gt;&#x27;);
 			
 			} else {
-				this.node.removeClass(&#x27;dev-fullscreen&#x27;);
-				this.node.addClass(&#x27;dev-non-fullscreen&#x27;);
-				this.node.one(&#x27;.dev-control-content&#x27;).html(&#x27;&lt;div class=&quot;iconfont&quot; data-status=&quot;non-fullscreen&quot;&gt;&amp;#13796&lt;/div&gt;&#x27;);
+				this.node.removeClass(&#x27;dev-fs&#x27;);
+				this.node.addClass(&#x27;dev-non-fs&#x27;);
+				this.node.one(&#x27;.dev-control-content&#x27;).html(&#x27;&lt;div class=&quot;iconfont&quot; data-status=&quot;non-fullscreen&quot;&gt;&amp;#13800&lt;/div&gt;&#x27;);
 			}
 		}
 	});

@@ -67,30 +67,30 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 			this.controlsNode = this.con.one('.' + className);
 			
 			// 播放按钮
-			this.playToggle = 'playtoggle' in this.filters? null: new PlayToggle(this.controlsNode, this.player);
+			this.playToggle = S.inArray('playtoggle', this.filters)? null: new PlayToggle(this.controlsNode, this.player);
 			this.children.push(this.PlayToggle);
 
 			// 时间进度
-			this.timeDisplay = 'timedisplay' in this.filters? null: new TimeDisplay(this.controlsNode, this.player);
+			this.timeDisplay = S.inArray('timedisplay', this.filters)? null: new TimeDisplay(this.controlsNode, this.player);
 			this.children.push(this.timeDisplay);
 
 			// 进度条
-			this.progress = 'progress' in this.filters? null: new Progress(this.controlsNode, this.player);
+			this.progress = S.inArray('progress', this.filters)? null: new Progress(this.controlsNode, this.player);
 			// 拖动进度条时禁止隐藏控制面板，拖动结束后激活隐藏控制面板
 			this.progress.on('dragmove', this.deactive, this);
 			this.progress.on('dragend', this.active, this);
 			this.children.push(this.progress);
 
 			// 全屏
-			this.fullscreen = 'fullscreen' in this.filters? null: new Fullscreen(this.controlsNode, this.player);
+			this.fullscreen = S.inArray('fullscreen', this.filters)? null: new Fullscreen(this.controlsNode, this.player);
 			this.children.push(this.fullscreen);
 
 			// 音量调节
-			this.volume = 'volume' in this.filters? null: new Volume(this.controlsNode, this.player);
+			this.volume = S.inArray('volume', this.filters)? null: new Volume(this.controlsNode, this.player);
 			this.children.push(this.volume);
 
 			// 静音
-			this.muteToggle = 'mutetoggle' in this.filters? null: new MuteToggle(this.controlsNode, this.player);
+			this.muteToggle = S.inArray('mutetoggle', this.filters)? null: new MuteToggle(this.controlsNode, this.player);
 			this.children.push(this.muteToggle);
 
 			// 插件
@@ -134,12 +134,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 			this.controlsNode.hide();
 		},
 		
-		/**
-		 * 激活控制面板，先显示控制面板，再启动自动隐藏的倒计时
-		 * 3秒后自动隐藏面板
-		 *
-		 * @method active
-		 */
 		active: function() {
 			var that = this;
 
@@ -154,11 +148,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 			}, 3000);
 		},
 
-		/**
-		 * 使控制面板不会自动隐藏
-		 *
-		 * @method deactive
-		 */
 		deactive: function() {
 			// 激活时先重置计时器
 			if (this.controlsTimeout) {
