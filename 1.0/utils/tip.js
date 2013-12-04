@@ -58,8 +58,6 @@ KISSY.add(function (S, Base, NODE) {
 				x = pageX - this.node.width() / 2,
 				y = offset.top - this.node.height();
 
-			console.log(minX);
-
 			x = x < minX? minX: (x > maxX? maxX: x);
 			this.node.css({
 				top: y + 'px',

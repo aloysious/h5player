@@ -402,47 +402,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 				var currSrc = this.playlist[this.playlistIndex];
 				that.loadTextTracklist(S.isArray(currSrc.textTracks)? currSrc.textTracks: []); 
 			});
-
-			// 主要针对移动设备，
-			// 第一次触碰屏幕时激活控制面板，
-			// 激活后再触碰屏幕才能暂停或继续播放
-			/*
-			EVENT.on(this.con, 'click', function() {
-				if (!that.hasCustomedControls()) {
-					return;
-				}	
-
-				if (that.isControlsShown()) {
-					if (that.paused()) {
-						that.play();
-					} else {
-						that.pause();
-					}
-				
-				} else {
-					that.activeControls();
-				}
-			});
-			*/
-
-			EVENT.on(this.con, 'click', function() {
-				if (!that.hasCustomedControls()) {
-					return;
-				}	
-
-				if (that.isControlsShown()) {
-					that.hideControls();
-				} else {
-					that.activeControls();
-				}
-			});
-
-			EVENT.on(this.con, 'touchmove', function() {
-				if (that.hasCustomedControls()) {
-					that.activeControls();
-				}
-			});
-
 		},
 
 		/**
@@ -485,9 +444,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		_createControlsPanel: function() {
 			this.controlsPanel = new ControlsPanel(this.id, this, this.controls);
-			
-			// 初始状态下需激活控制面板
-			this.activeControls();
 		},
 
 		/**
@@ -657,6 +613,14 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		 */
 		loadTextTracklist: function(list, firstIndex) {
 			this.textTracklist = list;
+
+			// 如果没有字幕同步模块，创建之
+			if (!this.textTrackControl) {
+				this.textTrackControl = new TextTrackControl(this.id, this, {textTracklist:this.textTracklist});
+			} else {
+				this.textTrackControl.setTextTracklist(this.textTracklist);				
+			}
+
 			this.loadTextTrackAt(firstIndex);
 		},
 		
@@ -900,76 +864,6 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		},
 
 		/**
-		 * 是否自定义控制面板
-		 *
-		 * @method hasCustomedControls
-		 * @return {Boolean} 是否为自定义控制面板
-		 */
-		hasCustomedControls: function() {
-			return !!this.controlsPanel;
-		},
-
-		/**
-		 * 控制面板是否显示
-		 *
-		 * @method isControlsShown
-		 * @return {Boolean} 是否显示
-		 */
-		isControlsShown: function() {
-			return this.controlsPanel && this.controlsPanel.isShown();
-		},
-
-		/**
-		 * 显示控制面板
-		 *
-		 * @method showControls
-		 */
-		showControls: function() {
-			this.controlsPanel && this.controlsPanel.show();
-		},
-
-		/**
-		 * 隐藏控制面板
-		 *
-		 * @method hideControls
-		 */
-		hideControls: function() {
-			this.controlsPanel && this.controlsPanel.hide();
-		},
-
-		/**
-		 * 激活控制面板，先显示控制面板，再启动自动隐藏的倒计时
-		 * 3秒后自动隐藏面板
-		 *
-		 * @method activeControls
-		 */
-		activeControls: function() {
-			var that = this;
-
-			// 激活时先重置计时器
-			if (this.controlsTimeout) {
-				clearTimeout(this.controlsTimeout);
-			}
-
-			this.showControls();
-			this.controlsTimeout = setTimeout(function() {
-				that.hideControls();
-			}, 3000);
-		},
-
-		/**
-		 * 使控制面板不会自动隐藏
-		 *
-		 * @method deactiveControls
-		 */
-		deactiveControls: function() {
-			// 激活时先重置计时器
-			if (this.controlsTimeout) {
-				clearTimeout(this.controlsTimeout);
-			}
-		},
-
-		/**
 		 * 隐藏字幕同步
 		 *
 		 * @method hideTextTrackControl
@@ -979,7 +873,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		},
 
 		/**
-		 * 现实字幕同步
+		 * 显示字幕同步
 		 *
 		 * @method showTextTrackControl
 		 */
@@ -1097,7 +991,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		'event', 
 		'dom', 
 		'node', 
-		'gallery/h5player/1.0/controls/controlspanel', 
+		'gallery/h5player/1.0/controls/index', 
 		'gallery/h5player/1.0/tracks/index', 
 		'./index.css']
 });

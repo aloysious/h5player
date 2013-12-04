@@ -88,8 +88,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 			this.player.seekTo(sec);
 			this.player.play();
 
-			// 结束拖动时，允许控制面板隐藏
-			this.player.activeControls();
+			this.fire('dragend');
 
 			Tip.hide();
 		},
@@ -103,8 +102,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, Tip) {
 				sec = (this.player.getDuration()) ? distance / width * this.player.getDuration(): 0,
 				currSrc = this.player.getPlaylist()[this.player.getPlaylistIndex()];
 			
-			// 拖动时，控制面板禁止隐藏
-			this.player.deactiveControls();
+			this.fire('dragmove');
 
 			this._updateProgressBar(this.playedNode, sec);
 			

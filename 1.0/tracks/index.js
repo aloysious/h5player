@@ -32,6 +32,8 @@ KISSY.add(function (S, Base, NODE, IO) {
 			this.cues = [];
 			this.render();
 
+			console.log('into track');
+
 		},
 
 		destory: function(){
