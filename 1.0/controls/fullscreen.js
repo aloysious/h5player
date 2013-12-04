@@ -66,15 +66,15 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE) {
 		},
 
 		_onFullscreenChange: function() {
-			if (!this.player.getIsFullScreen()) {
-				this.node.removeClass('dev-non-fullscreen');
-				this.node.addClass('dev-fullscreen');
-				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="fullscreen">&#13800</div>');
+			if (this.player.getIsFullScreen()) {
+				this.node.removeClass('dev-non-fs');
+				this.node.addClass('dev-fs');
+				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="fullscreen">&#13796</div>');
 			
 			} else {
-				this.node.removeClass('dev-fullscreen');
-				this.node.addClass('dev-non-fullscreen');
-				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="non-fullscreen">&#13796</div>');
+				this.node.removeClass('dev-fs');
+				this.node.addClass('dev-non-fs');
+				this.node.one('.dev-control-content').html('<div class="iconfont" data-status="non-fullscreen">&#13800</div>');
 			}
 		}
 	});

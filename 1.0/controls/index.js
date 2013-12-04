@@ -123,7 +123,7 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, PlayToggle, TimeDisplay,  Progres
 		},
 
 		isShown: function() {
-			return !(this.controlsNode.css('display') === 'none')
+			return !(this.controlsNode.css('display') === 'none');
 		},
 
 		show: function() {

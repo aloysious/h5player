@@ -800,6 +800,16 @@ KISSY.add(function (S, Base, EVENT, DOM, NODE, ControlsPanel, TextTrackControl) 
 		setPoster: function(posterUrl) {
 			this.videoTag.poster = posterUrl;
 		},
+		
+		/**
+		 * 获取播放器静态占位图片
+		 *
+		 * @method getPoster
+		 * @return {String} 图片地址
+		 */
+		getPoster: function() {
+			return this.videoTag.poster;
+		},
 
 		/**
 		 * 设置全屏
