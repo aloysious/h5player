@@ -132,7 +132,34 @@ getPlaylistIndex|-|_Number_|获取当前视频在列表中的序号
 getTracklist|-|_Array_|获取字幕列表
 getTracklistIndex|-|_Number_|获取当前字幕在列表中的序号
 
-
+### 事件
+ 事件名 | 说明 
+:-----------|:------
+loadstart|开始加载媒体数据时触发
+suspend|临时停止加载媒体数据时触发
+abort|终止加载媒体数据时触发
+error|加载过程中发生错误时触发
+emptied|当网络状态从其他状态切换至NETWORK_EMPTY时触发
+stalled|尝试去加载媒体数据，当数据无法到达时触发
+loadedmetadata|当媒体时长、播放器尺寸等meta信息准备好时触发
+loadeddata|首次在当期时刻可以渲染媒体数据进行播放时触发
+canplay|当可以恢复播放，但估计以当前速率无法持续播放至结束点时触发
+canplaythrough|当可以恢复播放，并且以当前速率可以持续播放至结束点时触发
+playing|当播放重新启动时触发
+waiting|当播放由于没有下一帧而暂停，并且可预知下一帧能够到来时触发
+seeking|seek过程开始时触发
+seeked|seek过程结束时触发
+ended|播放到达结束点时触发
+durationchange|视频时长更新时触发
+timeupdate|当期播放时间更新时触发
+progress|在加载媒体数据过程中连续触发
+play|媒体不再暂停时触发，发生在play()返回后，后autoplay引起播放时
+pause|媒体暂停时触发，发生在pause()返回后
+ratechange|播放速率更新后触发
+volumechange|音量更新后触发
+fullscreenchange|全屏或取消全屏时触发
+loadedtexttrack|加载完字幕后触发
+errortexttrack|加载字幕失败后触发
 
 ## 定制皮肤
 
